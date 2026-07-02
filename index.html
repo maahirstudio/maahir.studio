@@ -12,7 +12,10 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://maahirstudios-netizen.github.io/maahir-studios/">
 <meta name="theme-color" content="#0F0F0F">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 115'%3E%3Cpath d='M50 0L100 28.9V86.6L50 115.5L0 86.6V28.9L50 0Z' fill='%23C9A84C'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="512x512" href="favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="shortcut icon" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
@@ -81,6 +84,11 @@ html.lenis{height:auto}
 .hero-hex-container .hex-obj{width:100%;height:100%;position:relative;transform-style:preserve-3d;animation:hexFloat 8s ease-in-out infinite;transition:transform .1s linear}
 .hero-hex-container .hex-obj svg{filter:drop-shadow(0 30px 60px rgba(201,168,76,.15));width:100%;height:100%}
 .hero-hex-container .hex-shadow{position:absolute;inset:15%;background:radial-gradient(ellipse at 50% 55%,rgba(201,168,76,.12),transparent 70%);border-radius:50%;filter:blur(40px);animation:shadowPulse 4s ease-in-out infinite}
+.ms-3d-stack{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transform-style:preserve-3d}
+.ms-layer{position:absolute;width:44%;aspect-ratio:1/1;border-radius:18%;object-fit:cover;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.ms-back{transform:translateZ(-36px) scale(1.04);opacity:.35;filter:blur(1px) brightness(.6)}
+.ms-mid{transform:translateZ(-18px) scale(1.02);opacity:.6;filter:brightness(.8)}
+.ms-front{transform:translateZ(0);opacity:1;filter:drop-shadow(0 25px 45px rgba(201,168,76,.25))}
 
 /* ==== MARQUEE ==== */
 .marquee-strip{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:28px 0;overflow:hidden;background:#fff}
@@ -293,7 +301,7 @@ html.lenis{height:auto}
 
 <!-- NAV -->
 <nav class="main-nav" id="top">
-  <a href="#top" class="logo">Maahir<span>Studios</span></a>
+  <a href="#top" class="logo" style="display:flex;align-items:center;gap:10px;"><img src="site-logo.png" alt="Maahir Studios logo" style="width:28px;height:28px;border-radius:6px;">Maahir<span>Studios</span></a>
   <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="siteMenu">
     <span></span><span></span><span></span>
   </button>
@@ -325,14 +333,16 @@ html.lenis{height:auto}
       <div class="hero-hex-container" id="hexContainer">
         <div class="hex-shadow"></div>
         <div class="hex-obj" id="hexObj">
-          <svg viewBox="0 0 200 231" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M100 0L200 57.74V173.21L100 230.94L0 173.21V57.74L100 0Z" fill="#C9A84C" fill-opacity="0.08"/>
-            <path d="M100 15L185 64.05V162.11L100 211.16L15 162.11V64.05L100 15Z" stroke="#C9A84C" stroke-width="1.5" fill="none"/>
-            <path d="M100 30L170 70.36V151.01L100 191.38L30 151.01V70.36L100 30Z" stroke="#C9A84C" stroke-width="0.8" fill="none" stroke-dasharray="4 6"/>
-            <path d="M100 45L155 76.67V139.91L100 171.59L45 139.91V76.67L100 45Z" stroke="#C9A84C" stroke-width="0.5" fill="none" opacity="0.5"/>
-            <circle cx="100" cy="115.47" r="25" stroke="#C9A84C" stroke-width="0.5" fill="none" opacity="0.3"/>
-            <path d="M100 80L130 97.32V131.95L100 149.27L70 131.95V97.32L100 80Z" stroke="#C9A84C" stroke-width="0.3" fill="none" opacity="0.4"/>
+          <svg viewBox="0 0 200 231" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;">
+            <path d="M100 0L200 57.74V173.21L100 230.94L0 173.21V57.74L100 0Z" fill="#C9A84C" fill-opacity="0.06"/>
+            <path d="M100 15L185 64.05V162.11L100 211.16L15 162.11V64.05L100 15Z" stroke="#C9A84C" stroke-width="1" fill="none" opacity="0.35"/>
+            <circle cx="100" cy="115.47" r="70" stroke="#C9A84C" stroke-width="0.5" fill="none" opacity="0.2"/>
           </svg>
+          <div class="ms-3d-stack">
+            <img class="ms-layer ms-back" src="site-logo.png" alt="">
+            <img class="ms-layer ms-mid" src="site-logo.png" alt="">
+            <img class="ms-layer ms-front" src="site-logo.png" alt="Maahir Studios">
+          </div>
         </div>
       </div>
     </div>
