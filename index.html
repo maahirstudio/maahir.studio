@@ -460,19 +460,25 @@ html.no-smooth-scroll .hero{position:relative}
 .grain-overlay{position:fixed;inset:0;z-index:99999;pointer-events:none;opacity:.035;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
 /* CLIENT FOLDER — fanned photo stack behind a frosted cover, spreads open on hover/click */
-.client-folder{position:relative;height:280px;display:flex;align-items:center;justify-content:center;cursor:pointer;perspective:1000px}
-.folder-card{position:absolute;width:78%;height:82%;border-radius:14px;overflow:hidden;background:#1a1a1a;box-shadow:0 20px 40px rgba(0,0,0,.35);transition:transform .6s cubic-bezier(.19,1,.22,1),box-shadow .6s ease;display:flex;align-items:flex-end}
-.folder-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.9}
-.folder-card.fc-1{transform:translate(-18px,10px) rotate(-9deg) scale(.92);z-index:1}
-.folder-card.fc-2{transform:translate(14px,6px) rotate(7deg) scale(.94);z-index:2}
-.folder-card.fc-cover{z-index:3;background:rgba(201,168,76,.14);border:1px solid rgba(201,168,76,.35);backdrop-filter:blur(10px);transform:translate(0,0) rotate(0deg) scale(1);display:flex;flex-direction:column;justify-content:flex-end;padding:18px}
-.client-folder:hover .folder-card.fc-1,.client-folder.open .folder-card.fc-1{transform:translate(-92px,-30px) rotate(-16deg) scale(1)}
-.client-folder:hover .folder-card.fc-2,.client-folder.open .folder-card.fc-2{transform:translate(88px,-26px) rotate(13deg) scale(1)}
-.client-folder:hover .folder-card.fc-cover,.client-folder.open .folder-card.fc-cover{transform:translate(0,34px) scale(1.02);box-shadow:0 30px 60px rgba(0,0,0,.4)}
+.client-folder{position:relative;height:280px;cursor:pointer;transition:height .55s cubic-bezier(.19,1,.22,1)}
+.client-folder.open{height:400px}
+.folder-card{position:absolute;left:11%;top:9%;width:78%;height:82%;border-radius:14px;overflow:hidden;background:#1a1a1a;box-shadow:0 20px 40px rgba(0,0,0,.35);transition:left .6s cubic-bezier(.19,1,.22,1),top .6s cubic-bezier(.19,1,.22,1),width .6s cubic-bezier(.19,1,.22,1),height .6s cubic-bezier(.19,1,.22,1),transform .6s cubic-bezier(.19,1,.22,1),box-shadow .6s ease}
+.folder-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.92}
+.folder-card.fc-1{transform:translate(-10px,10px) rotate(-8deg) scale(.92);z-index:1}
+.folder-card.fc-2{transform:translate(10px,6px) rotate(6deg) scale(.94);z-index:2}
+.folder-card.fc-cover{z-index:3;background:rgba(201,168,76,.14);border:1px solid rgba(201,168,76,.35);backdrop-filter:blur(10px);transform:none;display:flex;flex-direction:column;justify-content:flex-end;padding:18px;transition:left .55s cubic-bezier(.19,1,.22,1),top .55s cubic-bezier(.19,1,.22,1),width .55s cubic-bezier(.19,1,.22,1),height .55s cubic-bezier(.19,1,.22,1),padding .45s ease,box-shadow .6s ease}
+/* OPEN: both photos move to their own clean slot side-by-side — fully
+   visible, no overlap — while the caption shrinks into a small strip up top */
+.client-folder:hover .folder-card.fc-1,.client-folder.open .folder-card.fc-1{left:3%;top:32%;width:45%;height:62%;transform:rotate(-5deg) scale(1)}
+.client-folder:hover .folder-card.fc-2,.client-folder.open .folder-card.fc-2{left:52%;top:32%;width:45%;height:62%;transform:rotate(4deg) scale(1)}
+.client-folder:hover .folder-card.fc-cover,.client-folder.open .folder-card.fc-cover{left:8%;top:2%;width:84%;height:24%;padding:10px 16px;box-shadow:0 20px 40px rgba(0,0,0,.35)}
 .client-folder:hover .folder-card,.client-folder.open .folder-card{box-shadow:0 25px 45px rgba(0,0,0,.4)}
+.client-folder:hover .fc-location,.client-folder.open .fc-location{display:none}
 .fc-tag{font-family:var(--font-mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);margin-bottom:6px}
 .fc-name{font-size:.95rem;font-weight:700;color:#F5F0EB;line-height:1.2}
 .fc-location{font-size:.75rem;color:rgba(245,240,235,.55);margin-top:2px}
+.client-folder:hover .fc-tag,.client-folder.open .fc-tag{margin-bottom:2px}
+.client-folder:hover .fc-name,.client-folder.open .fc-name{font-size:.85rem}
 /* STAMP CARD REVEAL — postage-stamp scalloped edge emerging from a frosted glass card on scroll */
 .stamp-wrap{position:relative;padding-top:70px;margin-bottom:20px}
 .stamp-frost{position:absolute;top:0;left:8%;width:84%;height:78%;background:rgba(245,240,235,.06);border:1px solid rgba(245,240,235,.12);border-radius:16px;backdrop-filter:blur(14px);transform:scale(.9) rotate(-3deg);opacity:.8;transition:transform .8s cubic-bezier(.19,1,.22,1),opacity .8s ease}
@@ -934,7 +940,7 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
     e.preventDefault();
     const targetY = target.getBoundingClientRect().top + window.scrollY;
     window.scrollTo({ top: Math.max(0, targetY), behavior: (smoothWrapper && smoothContent && !isTouchDevice && !reduceMotion) ? 'auto' : 'smooth' });
-    history.pushState(null, '', hash);
+    try { history.pushState(null, '', hash); } catch (err) { /* blocked in sandboxed preview iframes — harmless to skip */ }
   });
 });
 
