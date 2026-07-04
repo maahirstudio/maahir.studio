@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Maahir Studios — Premium Design Assets & Brand Systems</title>
-<meta name="description" content="Maahir Studios — graphic design, motion design, and video editing studio. Premium AI, CDR, and print-ready design files, plus contract-basis creative work.">
+<title>Maahir Studio — Premium Design Assets & Brand Systems</title>
+<meta name="description" content="Maahir Studio — graphic design, motion design, and video editing studio. Premium AI, CDR, and print-ready design files, plus contract-basis creative work.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://maahirstudios-netizen.github.io/maahir-studios/">
-<meta property="og:title" content="Maahir Studios — Premium Design Assets">
+<meta property="og:title" content="Maahir Studio — Premium Design Assets">
 <meta property="og:description" content="Graphic design, motion design, and video editing. Premium design files plus contract-basis creative work.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://maahirstudios-netizen.github.io/maahir-studios/">
@@ -37,8 +37,18 @@
   --font-mono:'JetBrains Mono',monospace;
 }
 
-html{scroll-behavior:smooth}
+html{scroll-behavior:auto}
 body{background:var(--bg);color:var(--text);font-family:var(--font-sans);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* ==== SMOOTH INERTIA SCROLL ==== */
+/* #smooth-wrapper is pinned to the viewport; #smooth-content is the real
+   page and gets translated with lerp easing in JS to fake "Lenis-style"
+   weighted scrolling. body height is synced to content height so the
+   native scrollbar + wheel/touch input still drive real window.scrollY. */
+#smooth-wrapper{position:fixed;top:0;left:0;width:100%;height:100vh;overflow:hidden}
+#smooth-content{will-change:transform}
+html.no-smooth-scroll #smooth-wrapper{position:static;overflow:visible}
+html.no-smooth-scroll #smooth-content{transform:none !important}
 
 /* SCROLLBAR */
 ::-webkit-scrollbar{width:3px}
@@ -49,7 +59,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-sans);overflo
 .scramble-text{opacity:1}
 
 /* SMOOTH LENIS-STYLE SCROLL */
-html.lenis{height:auto}
 
 /* ==== NAVIGATION ==== */
 .main-nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:24px 40px;display:flex;justify-content:space-between;align-items:center;mix-blend-mode:difference}
@@ -59,6 +68,46 @@ html.lenis{height:auto}
 .main-nav .menu a{font-family:var(--font-mono);font-size:.68rem;color:#fff;text-decoration:none;letter-spacing:.08em;text-transform:uppercase;opacity:.7;transition:opacity .4s;position:relative}
 .main-nav .menu a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:#fff;transition:width .5s cubic-bezier(.16,1,.3,1)}
 .main-nav .menu a:hover{opacity:1}.main-nav .menu a:hover::after{width:100%}
+
+/* ==== PHILOSOPHY: SCROLL-JACKED SCALE REVEAL ==== */
+.philo-pin-spacer{position:relative;height:250vh}
+.philo-section{will-change:transform}
+#philoQuote{will-change:transform,opacity;transform-origin:50% 50%}
+#philoText{will-change:opacity,transform}
+.scroll-highlight .word{color:rgba(245,240,235,.22);transition:color .25s ease;font-weight:500}
+.scroll-highlight .word.lit{color:var(--text);font-weight:700}
+html.no-smooth-scroll .philo-pin-spacer{height:auto}
+html.no-smooth-scroll #philoText{opacity:1;transform:none}
+
+/* ==== WORK SHOWCASE: SCROLL-JACKED SLIDE SWAP ==== */
+.work-pin-spacer{position:relative;height:500vh}
+.work-pin{position:relative;height:100vh;overflow:hidden;background:var(--text);display:flex;align-items:center;justify-content:center;will-change:transform}
+.work-pin-slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(1.12);transition:opacity .5s ease,transform .5s cubic-bezier(.16,1,.3,1);pointer-events:none}
+.work-pin-slide.active{opacity:1;transform:scale(1)}
+.work-pin-slide img{width:min(70vw,900px);aspect-ratio:16/9;object-fit:cover;border-radius:10px;box-shadow:0 50px 100px rgba(0,0,0,.55)}
+.work-pin-slide .work-pin-fallback{display:none;width:min(70vw,900px);aspect-ratio:16/9;border-radius:10px;box-shadow:0 50px 100px rgba(0,0,0,.55);background:linear-gradient(135deg,#1a1a1a,#252017);align-items:center;justify-content:center;font-family:var(--font-mono);font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(245,240,235,.35)}
+.work-pin-slide.img-missing img{display:none}
+.work-pin-slide.img-missing .work-pin-fallback{display:flex}
+.work-pin-label{position:absolute;bottom:56px;left:50%;transform:translateX(-50%);color:#F5F0EB;font-family:var(--font-mono);font-size:.8rem;letter-spacing:.15em;text-transform:uppercase;opacity:.75;white-space:nowrap}
+.work-pin-progress{position:absolute;bottom:24px;left:6vw;right:6vw;height:2px;background:rgba(245,240,235,.15);border-radius:2px;overflow:hidden}
+.work-pin-progress span{display:block;height:100%;width:0%;background:var(--gold)}
+html.no-smooth-scroll .work-pin-spacer{height:auto}
+html.no-smooth-scroll .work-pin{position:relative;height:auto;display:block;padding:40px 0}
+html.no-smooth-scroll .work-pin-slide{position:relative;inset:auto;opacity:1;transform:none;margin-bottom:24px}
+html.no-smooth-scroll .work-pin-progress{display:none}
+
+/* ==== HERO PIN SPACER ==== */
+/* Gives the hero 2x viewport height of scroll runway. JS keeps the hero
+   itself visually pinned to the top of that runway (manual pin, since
+   position:sticky doesn't survive the transformed smooth-scroll parent)
+   while driving an exit animation on scroll progress, then releases. */
+.hero-pin-spacer{position:relative;height:200vh}
+.hero{position:relative;will-change:transform,opacity}
+.hero-left{will-change:transform,opacity,filter}
+.hero-flash{position:absolute;inset:0;background:radial-gradient(circle at 68% 50%,var(--gold) 0%,var(--gold-light) 45%,var(--bg) 80%);opacity:0;pointer-events:none;z-index:5;will-change:opacity}
+html.no-smooth-scroll .hero-flash{display:none}
+html.no-smooth-scroll .hero-pin-spacer{height:auto}
+html.no-smooth-scroll .hero{position:relative}
 
 /* ==== HERO ==== */
 .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:0 40px;overflow:hidden}
@@ -80,16 +129,19 @@ html.lenis{height:auto}
 .hero-desc{font-size:1rem;line-height:1.65;color:var(--text-muted);max-width:340px;opacity:0;animation:fadeIn 1s ease 1.2s forwards}
 
 .hero-right{position:relative;display:flex;align-items:center;justify-content:center;min-height:100vh}
-.hero-hex-container{width:min(45vw,500px);height:min(45vw,500px);position:relative;perspective:1200px}
+.hero-hex-container{width:min(45vw,500px);height:min(45vw,500px);position:relative;perspective:1200px;will-change:transform,opacity}
 .hero-hex-container .hex-obj{width:100%;height:100%;position:relative;transform-style:preserve-3d}
 .hero-hex-container .hex-obj svg{filter:drop-shadow(0 30px 60px rgba(201,168,76,.15));width:100%;height:100%}
 .hero-hex-container .hex-shadow{position:absolute;inset:15%;background:radial-gradient(ellipse at 50% 55%,rgba(201,168,76,.12),transparent 70%);border-radius:50%;filter:blur(40px);animation:shadowPulse 4s ease-in-out infinite}
-.ms-logo-wrap{position:relative;width:58%;height:58%;will-change:transform;animation:msGentleSpin 10s ease-in-out infinite}
+.hero-hex-container .hex-obj{transform:rotateX(var(--tiltY,0deg)) rotateY(var(--tiltX,0deg));transition:transform .3s cubic-bezier(.16,1,.3,1);cursor:pointer}
+.hero-hex-container .hex-obj.is-touched{animation:hexPop .6s cubic-bezier(.34,1.56,.64,1)}
+@keyframes hexPop{0%{transform:rotateX(var(--tiltY,0deg)) rotateY(var(--tiltX,0deg)) scale(1)}40%{transform:rotateX(var(--tiltY,0deg)) rotateY(var(--tiltX,0deg)) scale(1.1) rotate(-4deg)}70%{transform:rotateX(var(--tiltY,0deg)) rotateY(var(--tiltX,0deg)) scale(.97) rotate(2deg)}100%{transform:rotateX(var(--tiltY,0deg)) rotateY(var(--tiltX,0deg)) scale(1)}}
+.ms-logo-wrap{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:58%;aspect-ratio:91.52/84.78;height:auto;will-change:transform;animation:msGentleSpin 10s ease-in-out infinite}
 .ms-shadow-layer{position:absolute;inset:0;width:100%;height:100%;transform:translate(6px,10px);opacity:.25}
 .ms-front-layer{position:absolute;inset:0;width:100%;height:100%}
 @keyframes msGentleSpin{
-  0%,100%{transform:rotateY(-8deg) rotateX(2deg)}
-  50%{transform:rotateY(8deg) rotateX(-2deg)}
+  0%,100%{transform:translate(-50%,-50%) rotateY(-14deg) rotateX(4deg)}
+  50%{transform:translate(-50%,-50%) rotateY(14deg) rotateX(-4deg)}
 }
 
 /* ==== MARQUEE ==== */
@@ -100,23 +152,29 @@ html.lenis{height:auto}
 .marquee-divider{width:6px;height:6px;background:var(--gold);transform:rotate(45deg);flex-shrink:0}
 
 /* ==== ABOUT — ASYMMETRIC ==== */
-.asymmetric{position:relative;padding:160px 40px;max-width:1400px;margin:0 auto;display:grid;grid-template-columns:35% 65%;gap:80px;align-items:start;overflow:hidden}
-.about-photo-scroll{position:absolute;inset:0;display:flex;align-items:center;pointer-events:none;z-index:0;opacity:.16;overflow:hidden;-webkit-mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent)}
+.about-outer{position:relative;overflow:hidden;padding:160px 0}
+.asymmetric{position:relative;max-width:1400px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:42% 58%;gap:60px;align-items:start;z-index:2}
+.about-photo-scroll{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;pointer-events:none;z-index:0;opacity:.16;overflow:hidden;-webkit-mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent)}
 .about-scroll-row{display:flex;gap:20px;flex-shrink:0;animation:aboutScrollLeft 50s linear infinite}
 .about-scroll-row img{width:320px;aspect-ratio:16/9;object-fit:cover;border-radius:6px;filter:grayscale(.3);flex-shrink:0}
 @keyframes aboutScrollLeft{from{transform:translateX(-50%)}to{transform:translateX(0)}}
 .asymmetric .side-label,.asymmetric .content{position:relative;z-index:2}
 .asymmetric .content{background:linear-gradient(90deg,var(--bg) 60%,rgba(245,240,235,.85) 100%)}
-.asymmetric .side-label{font-family:var(--font-mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.2em;color:var(--text-muted);position:sticky;top:120px}
-.asymmetric .side-label::before{content:'';display:block;width:40px;height:1px;background:var(--gold);margin-bottom:20px}
-.asymmetric .content h2{font-family:var(--font-serif);font-size:clamp(2.5rem,5vw,4.5rem);font-weight:600;line-height:1.05;letter-spacing:-.02em;margin-bottom:32px}
+.asymmetric .side-label{position:relative;min-height:60vh;display:flex;flex-direction:column;justify-content:center;will-change:transform}
+.asymmetric .side-label-tag{font-family:var(--font-mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.2em;color:var(--text-muted);display:block}
+.asymmetric .side-label-tag::before{content:'';display:block;width:40px;height:1px;background:var(--gold);margin-bottom:20px}
+.asymmetric .content h2,.asymmetric .side-label h2{font-family:var(--font-serif);font-size:clamp(3rem,7vw,6rem);font-weight:600;line-height:1.05;letter-spacing:-.02em;margin-top:28px;margin-bottom:0}
 .asymmetric .content p{font-size:1.05rem;line-height:1.75;color:var(--text-muted);max-width:600px;margin-bottom:24px}
 .asymmetric .content .highlight{color:var(--text);font-weight:500}
+/* split-text: words revealed one at a time as the element scrolls into view */
+.split-text .word{display:inline-block;overflow:hidden;vertical-align:top}
+.split-text .word span{display:inline-block;transform:translateY(115%) rotate(4deg);opacity:0;filter:blur(6px);transition:transform .9s cubic-bezier(.16,1,.3,1),opacity .7s ease,filter .7s ease}
+.split-text.visible .word span{transform:translateY(0) rotate(0deg);opacity:1;filter:blur(0)}
 
 /* ==== WORK — HORIZONTAL SCROLL ==== */
 .work-section{background:var(--text);color:var(--bg);padding:100px 0;overflow:hidden}
 .work-header{padding:0 40px 60px;display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid rgba(245,240,235,.1);margin-bottom:60px}
-.work-header h2{font-size:clamp(2rem,4vw,3.5rem);font-weight:800;letter-spacing:-.03em}
+.work-header h2{font-size:clamp(2.5rem,6vw,5.5rem);font-weight:800;letter-spacing:-.03em}
 .work-header .count{font-family:var(--font-mono);font-size:.75rem;color:var(--gold);text-transform:uppercase;letter-spacing:.1em}
 
 .work-track{display:flex;gap:40px;padding:0 40px 60px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
@@ -134,7 +192,7 @@ html.lenis{height:auto}
 /* ==== SERVICES — ORBITING PILLARS (compact) ==== */
 .services{padding:90px 40px;max-width:1200px;margin:0 auto}
 .services-header{margin-bottom:36px;text-align:center}
-.services-header h2{font-size:clamp(2rem,4vw,3.2rem);font-weight:800;letter-spacing:-.04em}
+.services-header h2{font-size:clamp(2.5rem,6vw,5.5rem);font-weight:800;letter-spacing:-.04em}
 
 .pillar-ring-wrap{position:relative;width:min(72vw,560px);height:min(72vw,560px);margin:0 auto;display:flex;align-items:center;justify-content:center}
 .pillar-center{position:relative;z-index:3;width:132px;height:132px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#1a1510,#0F0F0F 70%);border:1px solid rgba(201,168,76,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 20px 50px rgba(0,0,0,.18)}
@@ -199,7 +257,7 @@ html.lenis{height:auto}
 
 /* ==== TESTIMONIALS — STACKING CARDS ==== */
 .testi-section{padding:140px 40px;max-width:1000px;margin:0 auto}
-.testi-section h2{font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-.03em;margin-bottom:80px}
+.testi-section h2{font-size:clamp(2.5rem,5vw,4.5rem);font-weight:800;letter-spacing:-.03em;margin-bottom:80px}
 .testi-stack{position:relative;height:500px}
 .testi-card{position:absolute;top:0;left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:8px;padding:48px;transition:all .6s cubic-bezier(.16,1,.3,1);box-shadow:0 4px 20px rgba(0,0,0,.04)}
 .testi-card:nth-child(1){z-index:5;transform:translateY(0) scale(1)}
@@ -253,14 +311,16 @@ html.lenis{height:auto}
 .main-nav.nav-open .nav-toggle span:nth-child(2){opacity:0}
 .main-nav.nav-open .nav-toggle span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
 .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:28px;opacity:0;animation:fadeIn 1s ease 1.45s forwards}
-.btn{display:inline-flex;align-items:center;justify-content:center;padding:14px 20px;border-radius:999px;text-decoration:none;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;font-family:var(--font-mono);transition:transform .3s ease,background .3s ease,color .3s ease,border-color .3s ease}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:14px 20px;border-radius:999px;text-decoration:none;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;font-family:var(--font-mono);transition:transform .25s cubic-bezier(.16,1,.3,1),background .3s ease,color .3s ease,border-color .3s ease;will-change:transform;position:relative;overflow:hidden}
+.btn .btn-ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.35);transform:scale(0);pointer-events:none;animation:btnRipple .6s ease-out forwards}
+@keyframes btnRipple{to{transform:scale(1);opacity:0}}
 .btn:hover{transform:translateY(-2px)}
 .btn-primary{background:var(--text);color:var(--bg);border:1px solid var(--text)}
 .btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border)}
 .shop-section{padding:140px 40px;background:#fff}
 .shop-header{max-width:1200px;margin:0 auto 60px;display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:end}
 .shop-kicker{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
-.shop-header h2{font-size:clamp(2.4rem,5vw,4rem);line-height:1;letter-spacing:-.04em}
+.shop-header h2{font-size:clamp(2.8rem,6vw,5.5rem);line-height:1;letter-spacing:-.04em}
 .shop-intro{font-size:1rem;line-height:1.75;color:var(--text-muted);max-width:480px}
 .product-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
 .product-card{background:var(--bg);border:1px solid var(--border);padding:30px;border-radius:18px;display:flex;flex-direction:column;min-height:320px;transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease}
@@ -398,32 +458,62 @@ html.lenis{height:auto}
 .lightbox-prev{left:24px;top:50%;transform:translateY(-50%)}
 .lightbox-next{right:24px;top:50%;transform:translateY(-50%)}
 @media(max-width:640px){.lightbox-prev,.lightbox-next{width:38px;height:38px}}
+.grain-overlay{position:fixed;inset:0;z-index:99999;pointer-events:none;opacity:.035;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* CLIENT FOLDER — fanned photo stack behind a frosted cover, spreads open on hover/click */
+.client-folder{position:relative;height:280px;display:flex;align-items:center;justify-content:center;cursor:pointer;perspective:1000px}
+.folder-card{position:absolute;width:78%;height:82%;border-radius:14px;overflow:hidden;background:#1a1a1a;box-shadow:0 20px 40px rgba(0,0,0,.35);transition:transform .6s cubic-bezier(.19,1,.22,1),box-shadow .6s ease;display:flex;align-items:flex-end}
+.folder-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.9}
+.folder-card.fc-1{transform:translate(-18px,10px) rotate(-9deg) scale(.92);z-index:1}
+.folder-card.fc-2{transform:translate(14px,6px) rotate(7deg) scale(.94);z-index:2}
+.folder-card.fc-cover{z-index:3;background:rgba(201,168,76,.14);border:1px solid rgba(201,168,76,.35);backdrop-filter:blur(10px);transform:translate(0,0) rotate(0deg) scale(1);display:flex;flex-direction:column;justify-content:flex-end;padding:18px}
+.client-folder:hover .folder-card.fc-1,.client-folder.open .folder-card.fc-1{transform:translate(-92px,-30px) rotate(-16deg) scale(1)}
+.client-folder:hover .folder-card.fc-2,.client-folder.open .folder-card.fc-2{transform:translate(88px,-26px) rotate(13deg) scale(1)}
+.client-folder:hover .folder-card.fc-cover,.client-folder.open .folder-card.fc-cover{transform:translate(0,34px) scale(1.02);box-shadow:0 30px 60px rgba(0,0,0,.4)}
+.client-folder:hover .folder-card,.client-folder.open .folder-card{box-shadow:0 25px 45px rgba(0,0,0,.4)}
+.fc-tag{font-family:var(--font-mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);margin-bottom:6px}
+.fc-name{font-size:.95rem;font-weight:700;color:#F5F0EB;line-height:1.2}
+.fc-location{font-size:.75rem;color:rgba(245,240,235,.55);margin-top:2px}
+/* STAMP CARD REVEAL — postage-stamp scalloped edge emerging from a frosted glass card on scroll */
+.stamp-wrap{position:relative;padding-top:70px;margin-bottom:20px}
+.stamp-frost{position:absolute;top:0;left:8%;width:84%;height:78%;background:rgba(245,240,235,.06);border:1px solid rgba(245,240,235,.12);border-radius:16px;backdrop-filter:blur(14px);transform:scale(.9) rotate(-3deg);opacity:.8;transition:transform .8s cubic-bezier(.19,1,.22,1),opacity .8s ease}
+.stamp-frame{position:relative;clip-path: polygon(2.36% 0.00%,2.78% 1.60%,3.96% 2.77%,5.56% 3.20%,7.16% 2.77%,8.33% 1.60%,8.76% 0.00%,13.47% 0.00%,13.90% 1.60%,15.07% 2.77%,16.67% 3.20%,18.27% 2.77%,19.44% 1.60%,19.87% 0.00%,24.58% 0.00%,25.01% 1.60%,26.18% 2.77%,27.78% 3.20%,29.38% 2.77%,30.55% 1.60%,30.98% 0.00%,35.69% 0.00%,36.12% 1.60%,37.29% 2.77%,38.89% 3.20%,40.49% 2.77%,41.66% 1.60%,42.09% 0.00%,46.80% 0.00%,47.23% 1.60%,48.40% 2.77%,50.00% 3.20%,51.60% 2.77%,52.77% 1.60%,53.20% 0.00%,57.91% 0.00%,58.34% 1.60%,59.51% 2.77%,61.11% 3.20%,62.71% 2.77%,63.88% 1.60%,64.31% 0.00%,69.02% 0.00%,69.45% 1.60%,70.62% 2.77%,72.22% 3.20%,73.82% 2.77%,74.99% 1.60%,75.42% 0.00%,80.13% 0.00%,80.56% 1.60%,81.73% 2.77%,83.33% 3.20%,84.93% 2.77%,86.10% 1.60%,86.53% 0.00%,91.24% 0.00%,91.67% 1.60%,92.84% 2.77%,94.44% 3.20%,96.04% 2.77%,97.22% 1.60%,97.64% 0.00%,100.00% 2.36%,98.40% 2.78%,97.23% 3.96%,96.80% 5.56%,97.23% 7.16%,98.40% 8.33%,100.00% 8.76%,100.00% 13.47%,98.40% 13.90%,97.23% 15.07%,96.80% 16.67%,97.23% 18.27%,98.40% 19.44%,100.00% 19.87%,100.00% 24.58%,98.40% 25.01%,97.23% 26.18%,96.80% 27.78%,97.23% 29.38%,98.40% 30.55%,100.00% 30.98%,100.00% 35.69%,98.40% 36.12%,97.23% 37.29%,96.80% 38.89%,97.23% 40.49%,98.40% 41.66%,100.00% 42.09%,100.00% 46.80%,98.40% 47.23%,97.23% 48.40%,96.80% 50.00%,97.23% 51.60%,98.40% 52.77%,100.00% 53.20%,100.00% 57.91%,98.40% 58.34%,97.23% 59.51%,96.80% 61.11%,97.23% 62.71%,98.40% 63.88%,100.00% 64.31%,100.00% 69.02%,98.40% 69.45%,97.23% 70.62%,96.80% 72.22%,97.23% 73.82%,98.40% 74.99%,100.00% 75.42%,100.00% 80.13%,98.40% 80.56%,97.23% 81.73%,96.80% 83.33%,97.23% 84.93%,98.40% 86.10%,100.00% 86.53%,100.00% 91.24%,98.40% 91.67%,97.23% 92.84%,96.80% 94.44%,97.23% 96.04%,98.40% 97.22%,100.00% 97.64%,97.64% 100.00%,97.22% 98.40%,96.04% 97.23%,94.44% 96.80%,92.84% 97.23%,91.67% 98.40%,91.24% 100.00%,86.53% 100.00%,86.10% 98.40%,84.93% 97.23%,83.33% 96.80%,81.73% 97.23%,80.56% 98.40%,80.13% 100.00%,75.42% 100.00%,74.99% 98.40%,73.82% 97.23%,72.22% 96.80%,70.62% 97.23%,69.45% 98.40%,69.02% 100.00%,64.31% 100.00%,63.88% 98.40%,62.71% 97.23%,61.11% 96.80%,59.51% 97.23%,58.34% 98.40%,57.91% 100.00%,53.20% 100.00%,52.77% 98.40%,51.60% 97.23%,50.00% 96.80%,48.40% 97.23%,47.23% 98.40%,46.80% 100.00%,42.09% 100.00%,41.66% 98.40%,40.49% 97.23%,38.89% 96.80%,37.29% 97.23%,36.12% 98.40%,35.69% 100.00%,30.98% 100.00%,30.55% 98.40%,29.38% 97.23%,27.78% 96.80%,26.18% 97.23%,25.01% 98.40%,24.58% 100.00%,19.87% 100.00%,19.44% 98.40%,18.27% 97.23%,16.67% 96.80%,15.07% 97.23%,13.90% 98.40%,13.47% 100.00%,8.76% 100.00%,8.33% 98.40%,7.16% 97.23%,5.56% 96.80%,3.96% 97.23%,2.78% 98.40%,2.36% 100.00%,0.00% 97.64%,1.60% 97.22%,2.77% 96.04%,3.20% 94.44%,2.77% 92.84%,1.60% 91.67%,0.00% 91.24%,0.00% 86.53%,1.60% 86.10%,2.77% 84.93%,3.20% 83.33%,2.77% 81.73%,1.60% 80.56%,0.00% 80.13%,0.00% 75.42%,1.60% 74.99%,2.77% 73.82%,3.20% 72.22%,2.77% 70.62%,1.60% 69.45%,0.00% 69.02%,0.00% 64.31%,1.60% 63.88%,2.77% 62.71%,3.20% 61.11%,2.77% 59.51%,1.60% 58.34%,0.00% 57.91%,0.00% 53.20%,1.60% 52.77%,2.77% 51.60%,3.20% 50.00%,2.77% 48.40%,1.60% 47.23%,0.00% 46.80%,0.00% 42.09%,1.60% 41.66%,2.77% 40.49%,3.20% 38.89%,2.77% 37.29%,1.60% 36.12%,0.00% 35.69%,0.00% 30.98%,1.60% 30.55%,2.77% 29.38%,3.20% 27.78%,2.77% 26.18%,1.60% 25.01%,0.00% 24.58%,0.00% 19.87%,1.60% 19.44%,2.77% 18.27%,3.20% 16.67%,2.77% 15.07%,1.60% 13.90%,0.00% 13.47%,0.00% 8.76%,1.60% 8.33%,2.77% 7.16%,3.20% 5.56%,2.77% 3.96%,1.60% 2.78%,0.00% 2.36%);background:#fff;padding:14px;transform:translateY(40px) scale(.85) rotate(4deg);opacity:0;filter:blur(6px);transition:transform 1s cubic-bezier(.19,1,.22,1),opacity .9s ease,filter .9s ease;box-shadow:0 30px 60px rgba(0,0,0,.35)}
+.stamp-frame img{width:100%;height:auto;display:block}
+.stamp-wrap.visible .stamp-frame{transform:translateY(0) scale(1) rotate(-1.5deg);opacity:1;filter:blur(0)}
+.stamp-wrap.visible .stamp-frost{transform:scale(1) rotate(2deg);opacity:.4}
+.stamp-wrap:hover .stamp-frame{transform:rotate(0deg) scale(1.03);transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
+
 </style>
 </head>
 <body>
+<div class="grain-overlay" aria-hidden="true"></div>
 
 <!-- MAGNETIC CURSOR -->
 <div class="mag-cursor" id="magCursor"></div>
 
 <!-- NAV -->
 <nav class="main-nav" id="top">
-  <a href="#top" class="logo" style="display:flex;align-items:center;gap:10px;"><img src="site-logo.png" alt="Maahir Studios logo" style="width:28px;height:28px;border-radius:6px;">Maahir<span>Studios</span></a>
+  <a href="#top" class="logo" style="display:flex;align-items:center;gap:10px;"><img src="site-logo.png" alt="Maahir Studio logo" style="width:28px;height:28px;border-radius:6px;">Maahir<span>Studio</span></a>
   <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="siteMenu">
     <span></span><span></span><span></span>
   </button>
   <div class="menu" id="siteMenu">
     <a href="#services">Services</a>
-    <a href="#gallery">Work</a>
     <a href="#clients">Clients</a>
     <a href="#shop">Shop</a>
     <a href="#contact">Contact</a>
   </div>
 </nav>
 
-<!-- HERO -->
-<section class="hero">
+<div id="smooth-wrapper">
+<div id="smooth-content">
+
+<!-- HERO (locked-scroll scene: pinned for an extra 100vh of scroll while
+     the text exits and the hex object zooms/spins, then releases) -->
+<div class="hero-pin-spacer" id="heroPinSpacer">
+<section class="hero" id="heroPin">
   <div class="hero-grid">
-    <div class="hero-left">
+    <div class="hero-left" id="heroLeft">
       <div class="eyebrow">Fatemi Design System</div>
       <h1 class="hero-title">
         <span class="line1"><span>Maahir</span></span>
@@ -454,7 +544,9 @@ html.lenis{height:auto}
       </div>
     </div>
   </div>
+  <div class="hero-flash" id="heroFlash"></div>
 </section>
+</div>
 
 <!-- MARQUEE -->
 <div class="marquee-strip">
@@ -469,7 +561,7 @@ html.lenis{height:auto}
     <span class="marquee-divider"></span>
     <span class="marquee-item">Motion Design</span>
     <span class="marquee-divider"></span>
-    <span class="marquee-item gold">Maahir Studios</span>
+    <span class="marquee-item gold">Maahir Studio</span>
     <span class="marquee-divider"></span>
     <span class="marquee-item">Brand Identity</span>
     <span class="marquee-divider"></span>
@@ -481,33 +573,37 @@ html.lenis{height:auto}
     <span class="marquee-divider"></span>
     <span class="marquee-item">Motion Design</span>
     <span class="marquee-divider"></span>
-    <span class="marquee-item gold">Maahir Studios</span>
+    <span class="marquee-item gold">Maahir Studio</span>
     <span class="marquee-divider"></span>
   </div>
 </div>
 
 <!-- ABOUT -->
-<section class="asymmetric" id="about">
+<section class="about-outer" id="about">
   <div class="about-photo-scroll" aria-hidden="true">
     <div class="about-scroll-row">
-      <img src="client-mazar-qutbi-wide-01.jpg" alt="" onerror="this.style.display='none'">
-      <img src="client-raudat-burhaniyah-wide-01.jpg" alt="" onerror="this.style.display='none'">
-      <img src="client-buttercups-wide-01.jpg" alt="" onerror="this.style.display='none'">
-      <img src="client-khoj-bin-malak-wide-01.jpg" alt="" onerror="this.style.display='none'">
-      <img src="client-almadrasa-saifiyah-wide-01.jpg" alt="" onerror="this.style.display='none'">
-      <img src="client-mazar-qutbi-wide-01.jpg" alt="" onerror="this.style.display='none'">
-      <img src="client-raudat-burhaniyah-wide-01.jpg" alt="" onerror="this.style.display='none'">
-      <img src="client-buttercups-wide-01.jpg" alt="" onerror="this.style.display='none'">
-      <img src="client-khoj-bin-malak-wide-01.jpg" alt="" onerror="this.style.display='none'">
-      <img src="client-almadrasa-saifiyah-wide-01.jpg" alt="" onerror="this.style.display='none'">
+      <img loading="lazy" decoding="async" width="800" height="600" src="client-mazar-qutbi-wide-01.jpg" alt="" onerror="this.style.display='none'">
+      <img loading="lazy" decoding="async" width="800" height="600" src="client-raudat-burhaniyah-wide-01.jpg" alt="" onerror="this.style.display='none'">
+      <img loading="lazy" decoding="async" width="800" height="600" src="client-buttercups-wide-01.jpg" alt="" onerror="this.style.display='none'">
+      <img loading="lazy" decoding="async" width="800" height="600" src="client-khoj-bin-malak-wide-01.jpg" alt="" onerror="this.style.display='none'">
+      <img loading="lazy" decoding="async" width="800" height="600" src="client-almadrasa-saifiyah-wide-01.jpg" alt="" onerror="this.style.display='none'">
+      <img loading="lazy" decoding="async" width="800" height="600" src="client-mazar-qutbi-wide-01.jpg" alt="" onerror="this.style.display='none'">
+      <img loading="lazy" decoding="async" width="800" height="600" src="client-raudat-burhaniyah-wide-01.jpg" alt="" onerror="this.style.display='none'">
+      <img loading="lazy" decoding="async" width="800" height="600" src="client-buttercups-wide-01.jpg" alt="" onerror="this.style.display='none'">
+      <img loading="lazy" decoding="async" width="800" height="600" src="client-khoj-bin-malak-wide-01.jpg" alt="" onerror="this.style.display='none'">
+      <img loading="lazy" decoding="async" width="800" height="600" src="client-almadrasa-saifiyah-wide-01.jpg" alt="" onerror="this.style.display='none'">
     </div>
   </div>
-  <div class="side-label">About</div>
+  <div class="asymmetric">
+  <div class="side-label">
+    <span class="side-label-tag">About</span>
+    <h2 class="reveal-item split-text">The craft of<br>intention.</h2>
+  </div>
   <div class="content">
-    <h2 class="reveal-item fade-scroll">The craft of<br>intention.</h2>
-    <p class="reveal-item">At <span class="highlight">Maahir Studios</span>, we don't simply design. We build visual systems rooted in the Fatemi tradition — where every proportion is calculated, every pattern carries meaning, and every form serves a sacred function.</p>
+    <p class="reveal-item">At <span class="highlight">Maahir Studio</span>, we don't simply design. We build visual systems rooted in the Fatemi tradition — where every proportion is calculated, every pattern carries meaning, and every form serves a sacred function.</p>
     <p class="reveal-item">Our methodology draws from centuries of geometric mastery, reinterpreted through contemporary digital tools. The hexagon — six sides, infinite possibilities — is not merely our mark. It is our philosophy.</p>
     <p class="reveal-item">From brand identities to immersive web experiences, we craft work that transcends trend and endures through time.</p>
+  </div>
   </div>
 </section>
 
@@ -522,7 +618,12 @@ html.lenis{height:auto}
   </div>
   <div class="product-grid" style="grid-template-columns:minmax(0,1fr);max-width:480px;">
     <article class="product-card reveal-item">
-      <img src="wall-of-reflections-cover.png" alt="Wall Of Reflections cover" style="width:100%;height:auto;border-radius:12px;margin-bottom:20px;display:block;">
+      <div class="stamp-wrap reveal-item">
+        <div class="stamp-frost"></div>
+        <div class="stamp-frame">
+          <img loading="lazy" decoding="async" width="800" height="600" src="wall-of-reflections-cover.png" alt="Wall Of Reflections cover">
+        </div>
+      </div>
       <div class="product-badge">Print / Wall Art</div>
       <h3>Wall Of Reflections</h3>
       <p>Print-ready wall art design, prepared for soft board printing with clean, gallery-ready composition.</p>
@@ -535,7 +636,7 @@ html.lenis{height:auto}
 <!-- SERVICES -->
 <section class="services" id="services">
   <div class="services-header reveal-item">
-    <h2 class="fade-scroll">Six pillars.<br>Infinite craft.</h2>
+    <h2 class="fade-scroll split-text">Six pillars.<br>Infinite craft.</h2>
   </div>
 
   <div class="pillar-ring-wrap reveal-item">
@@ -612,186 +713,95 @@ html.lenis{height:auto}
 <!-- CLIENTS -->
 <section id="clients" style="padding:100px 6vw;">
   <div class="services-header reveal-item" style="margin-bottom:60px;">
-    <h2 class="fade-scroll">Trusted by<br>institutions and brands.</h2>
+    <h2 class="fade-scroll split-text">Trusted by<br>institutions and brands.</h2>
   </div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;background:rgba(245,240,235,.08);border:1px solid rgba(245,240,235,.08);">
-    <div class="reveal-item" style="background:var(--bg,#0F0F0F);padding:32px 28px;">
-      <div style="font-family:var(--font-mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.15em;color:var(--gold);margin-bottom:10px;">Religious Institution</div>
-      <div style="font-size:1.05rem;font-weight:600;margin-bottom:4px;">Mazar e Qutbi</div>
-      <div style="font-size:.85rem;opacity:.5;">Ahmedabad</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;">
+    <div class="client-folder reveal-item" tabindex="0" role="button" aria-label="Mazar e Qutbi — view work">
+      <div class="folder-card fc-1"><img loading="lazy" decoding="async" width="800" height="600" src="client-mazar-qutbi-signage-02.jpg" alt="" onerror="this.style.opacity=0"></div>
+      <div class="folder-card fc-2"><img loading="lazy" decoding="async" width="800" height="600" src="client-mazar-qutbi-signage-03.jpg" alt="" onerror="this.style.opacity=0"></div>
+      <div class="folder-card fc-cover">
+        <div class="fc-tag">Religious Institution</div>
+        <div class="fc-name">Mazar e Qutbi</div>
+        <div class="fc-location">Ahmedabad</div>
+      </div>
     </div>
-    <div class="reveal-item" style="background:var(--bg,#0F0F0F);padding:32px 28px;">
-      <div style="font-family:var(--font-mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.15em;color:var(--gold);margin-bottom:10px;">Educational Institution</div>
-      <div style="font-size:1.05rem;font-weight:600;margin-bottom:4px;">Raudat il Ilm il Burhaniyah</div>
-      <div style="font-size:.85rem;opacity:.5;">Paris</div>
+    <div class="client-folder reveal-item" tabindex="0" role="button" aria-label="Raudat il Ilm il Burhaniyah — view work">
+      <div class="folder-card fc-1"><img loading="lazy" decoding="async" width="800" height="600" src="client-raudat-burhaniyah-brochure-02.jpg" alt="" onerror="this.style.opacity=0"></div>
+      <div class="folder-card fc-2"><img loading="lazy" decoding="async" width="800" height="600" src="client-raudat-burhaniyah-brochure-03.jpg" alt="" onerror="this.style.opacity=0"></div>
+      <div class="folder-card fc-cover">
+        <div class="fc-tag">Educational Institution</div>
+        <div class="fc-name">Raudat il Ilm il Burhaniyah</div>
+        <div class="fc-location">Paris</div>
+      </div>
     </div>
-    <div class="reveal-item" style="background:var(--bg,#0F0F0F);padding:32px 28px;">
-      <div style="font-family:var(--font-mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.15em;color:var(--gold);margin-bottom:10px;">Retail Brand</div>
-      <div style="font-size:1.05rem;font-weight:600;margin-bottom:4px;">Butter Cups</div>
-      <div style="font-size:.85rem;opacity:.5;">Vapi</div>
+    <div class="client-folder reveal-item" tabindex="0" role="button" aria-label="Butter Cups — view work">
+      <div class="folder-card fc-1"><img loading="lazy" decoding="async" width="800" height="600" src="client-buttercups-packaging-02.jpg" alt="" onerror="this.style.opacity=0"></div>
+      <div class="folder-card fc-2"><img loading="lazy" decoding="async" width="800" height="600" src="client-buttercups-packaging-03.jpg" alt="" onerror="this.style.opacity=0"></div>
+      <div class="folder-card fc-cover">
+        <div class="fc-tag">Retail Brand</div>
+        <div class="fc-name">Butter Cups</div>
+        <div class="fc-location">Vapi</div>
+      </div>
     </div>
-    <div class="reveal-item" style="background:var(--bg,#0F0F0F);padding:32px 28px;">
-      <div style="font-family:var(--font-mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.15em;color:var(--gold);margin-bottom:10px;">Religious Institution</div>
-      <div style="font-size:1.05rem;font-weight:600;margin-bottom:4px;">Mazar-E-Syedi Khoj Bin Malak</div>
-      <div style="font-size:.85rem;opacity:.5;">Kaparwanj</div>
+    <div class="client-folder reveal-item" tabindex="0" role="button" aria-label="Mazar-E-Syedi Khoj Bin Malak — view work">
+      <div class="folder-card fc-1"><img loading="lazy" decoding="async" width="800" height="600" src="client-khoj-bin-malak-banner-02.jpg" alt="" onerror="this.style.opacity=0"></div>
+      <div class="folder-card fc-2"><img loading="lazy" decoding="async" width="800" height="600" src="client-khoj-bin-malak-banner-03.jpg" alt="" onerror="this.style.opacity=0"></div>
+      <div class="folder-card fc-cover">
+        <div class="fc-tag">Religious Institution</div>
+        <div class="fc-name">Mazar-E-Syedi Khoj Bin Malak</div>
+        <div class="fc-location">Kaparwanj</div>
+      </div>
     </div>
-    <div class="reveal-item" style="background:var(--bg,#0F0F0F);padding:32px 28px;">
-      <div style="font-family:var(--font-mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.15em;color:var(--gold);margin-bottom:10px;">Educational Institution</div>
-      <div style="font-size:1.05rem;font-weight:600;margin-bottom:4px;">Al Madrasa Tus Saifiyah</div>
-      <div style="font-size:.85rem;opacity:.5;">Vapi</div>
+    <div class="client-folder reveal-item" tabindex="0" role="button" aria-label="Al Madrasa Tus Saifiyah — view work">
+      <div class="folder-card fc-1"><img loading="lazy" decoding="async" width="800" height="600" src="client-almadrasa-saifiyah-poster-02.jpg" alt="" onerror="this.style.opacity=0"></div>
+      <div class="folder-card fc-2"><img loading="lazy" decoding="async" width="800" height="600" src="client-almadrasa-saifiyah-poster-03.jpg" alt="" onerror="this.style.opacity=0"></div>
+      <div class="folder-card fc-cover">
+        <div class="fc-tag">Educational Institution</div>
+        <div class="fc-name">Al Madrasa Tus Saifiyah</div>
+        <div class="fc-location">Vapi</div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- GALLERY -->
-<section id="gallery" style="padding:100px 6vw;">
-  <div class="services-header reveal-item" style="margin-bottom:40px;">
-    <h2 class="fade-scroll">Selected<br>work.</h2>
-  </div>
-  <div class="gallery-filters reveal-item">
-    <button class="gallery-filter-btn active" data-filter="all">All Work</button>
-    <button class="gallery-filter-btn" data-filter="mazar-qutbi">Mazar e Qutbi</button>
-    <button class="gallery-filter-btn" data-filter="raudat-burhaniyah">Raudat il Ilm il Burhaniyah</button>
-    <button class="gallery-filter-btn" data-filter="buttercups">Butter Cups</button>
-    <button class="gallery-filter-btn" data-filter="khoj-bin-malak">Mazar-E-Syedi Khoj Bin Malak</button>
-    <button class="gallery-filter-btn" data-filter="almadrasa-saifiyah">Al Madrasa Tus Saifiyah</button>
-  </div>
-  <div class="gallery-grid" id="galleryGrid">
-    <div class="gallery-item reveal-item" data-client="mazar-qutbi">
-      <img src="client-mazar-qutbi-signage-01.jpg" alt="Mazar e Qutbi — Signage" onerror="this.parentElement.classList.add('img-missing')">
-      <div class="gallery-placeholder-label">client-mazar-qutbi-signage-01.jpg</div>
-      <div class="gallery-overlay">
-        <div class="gallery-overlay-client">Mazar e Qutbi</div>
-        <div class="gallery-overlay-project">Signage</div>
-      </div>
+<!-- WORK SHOWCASE (locked-scroll: scroll swaps through client shots
+     while the page holds still, then releases into the full grid) -->
+<div class="work-pin-spacer" id="workPinSpacer">
+  <div class="work-pin" id="workPin">
+    <div class="work-pin-slide" data-i="0">
+      <img loading="lazy" decoding="async" width="800" height="600" src="client-mazar-qutbi-wide-01.jpg" alt="Mazar e Qutbi" onerror="this.parentElement.classList.add('img-missing')">
+      <div class="work-pin-fallback">Mazar e Qutbi</div>
+      <span class="work-pin-label">01 — Mazar e Qutbi</span>
     </div>
-    <div class="gallery-item reveal-item" data-client="mazar-qutbi">
-      <img src="client-mazar-qutbi-signage-02.jpg" alt="Mazar e Qutbi — Signage" onerror="this.parentElement.classList.add('img-missing')">
-      <div class="gallery-placeholder-label">client-mazar-qutbi-signage-02.jpg</div>
-      <div class="gallery-overlay">
-        <div class="gallery-overlay-client">Mazar e Qutbi</div>
-        <div class="gallery-overlay-project">Signage</div>
-      </div>
+    <div class="work-pin-slide" data-i="1">
+      <img loading="lazy" decoding="async" width="800" height="600" src="client-raudat-burhaniyah-wide-01.jpg" alt="Raudat il Ilm il Burhaniyah" onerror="this.parentElement.classList.add('img-missing')">
+      <div class="work-pin-fallback">Raudat il Ilm il Burhaniyah</div>
+      <span class="work-pin-label">02 — Raudat il Ilm il Burhaniyah</span>
     </div>
-    <div class="gallery-item reveal-item" data-client="mazar-qutbi">
-      <img src="client-mazar-qutbi-signage-03.jpg" alt="Mazar e Qutbi — Signage" onerror="this.parentElement.classList.add('img-missing')">
-      <div class="gallery-placeholder-label">client-mazar-qutbi-signage-03.jpg</div>
-      <div class="gallery-overlay">
-        <div class="gallery-overlay-client">Mazar e Qutbi</div>
-        <div class="gallery-overlay-project">Signage</div>
-      </div>
+    <div class="work-pin-slide" data-i="2">
+      <img loading="lazy" decoding="async" width="800" height="600" src="client-buttercups-wide-01.jpg" alt="Butter Cups" onerror="this.parentElement.classList.add('img-missing')">
+      <div class="work-pin-fallback">Butter Cups</div>
+      <span class="work-pin-label">03 — Butter Cups</span>
     </div>
-    <div class="gallery-item reveal-item" data-client="raudat-burhaniyah">
-      <img src="client-raudat-burhaniyah-brochure-01.jpg" alt="Raudat il Ilm il Burhaniyah — Brochure Design" onerror="this.parentElement.classList.add('img-missing')">
-      <div class="gallery-placeholder-label">client-raudat-burhaniyah-brochure-01.jpg</div>
-      <div class="gallery-overlay">
-        <div class="gallery-overlay-client">Raudat il Ilm il Burhaniyah</div>
-        <div class="gallery-overlay-project">Brochure Design</div>
-      </div>
+    <div class="work-pin-slide" data-i="3">
+      <img loading="lazy" decoding="async" width="800" height="600" src="client-khoj-bin-malak-wide-01.jpg" alt="Mazar-E-Syedi Khoj Bin Malak" onerror="this.parentElement.classList.add('img-missing')">
+      <div class="work-pin-fallback">Mazar-E-Syedi Khoj Bin Malak</div>
+      <span class="work-pin-label">04 — Khoj Bin Malak</span>
     </div>
-    <div class="gallery-item reveal-item" data-client="raudat-burhaniyah">
-      <img src="client-raudat-burhaniyah-brochure-02.jpg" alt="Raudat il Ilm il Burhaniyah — Brochure Design" onerror="this.parentElement.classList.add('img-missing')">
-      <div class="gallery-placeholder-label">client-raudat-burhaniyah-brochure-02.jpg</div>
-      <div class="gallery-overlay">
-        <div class="gallery-overlay-client">Raudat il Ilm il Burhaniyah</div>
-        <div class="gallery-overlay-project">Brochure Design</div>
-      </div>
+    <div class="work-pin-slide" data-i="4">
+      <img loading="lazy" decoding="async" width="800" height="600" src="client-almadrasa-saifiyah-wide-01.jpg" alt="Al Madrasa Tus Saifiyah" onerror="this.parentElement.classList.add('img-missing')">
+      <div class="work-pin-fallback">Al Madrasa Tus Saifiyah</div>
+      <span class="work-pin-label">05 — Al Madrasa Tus Saifiyah</span>
     </div>
-    <div class="gallery-item reveal-item" data-client="raudat-burhaniyah">
-      <img src="client-raudat-burhaniyah-brochure-03.jpg" alt="Raudat il Ilm il Burhaniyah — Brochure Design" onerror="this.parentElement.classList.add('img-missing')">
-      <div class="gallery-placeholder-label">client-raudat-burhaniyah-brochure-03.jpg</div>
-      <div class="gallery-overlay">
-        <div class="gallery-overlay-client">Raudat il Ilm il Burhaniyah</div>
-        <div class="gallery-overlay-project">Brochure Design</div>
-      </div>
-    </div>
-    <div class="gallery-item reveal-item" data-client="buttercups">
-      <img src="client-buttercups-packaging-01.jpg" alt="Butter Cups — Packaging" onerror="this.parentElement.classList.add('img-missing')">
-      <div class="gallery-placeholder-label">client-buttercups-packaging-01.jpg</div>
-      <div class="gallery-overlay">
-        <div class="gallery-overlay-client">Butter Cups</div>
-        <div class="gallery-overlay-project">Packaging</div>
-      </div>
-    </div>
-    <div class="gallery-item reveal-item" data-client="buttercups">
-      <img src="client-buttercups-packaging-02.jpg" alt="Butter Cups — Packaging" onerror="this.parentElement.classList.add('img-missing')">
-      <div class="gallery-placeholder-label">client-buttercups-packaging-02.jpg</div>
-      <div class="gallery-overlay">
-        <div class="gallery-overlay-client">Butter Cups</div>
-        <div class="gallery-overlay-project">Packaging</div>
-      </div>
-    </div>
-    <div class="gallery-item reveal-item" data-client="buttercups">
-      <img src="client-buttercups-packaging-03.jpg" alt="Butter Cups — Packaging" onerror="this.parentElement.classList.add('img-missing')">
-      <div class="gallery-placeholder-label">client-buttercups-packaging-03.jpg</div>
-      <div class="gallery-overlay">
-        <div class="gallery-overlay-client">Butter Cups</div>
-        <div class="gallery-overlay-project">Packaging</div>
-      </div>
-    </div>
-    <div class="gallery-item reveal-item" data-client="khoj-bin-malak">
-      <img src="client-khoj-bin-malak-banner-01.jpg" alt="Mazar-E-Syedi Khoj Bin Malak — Banner Design" onerror="this.parentElement.classList.add('img-missing')">
-      <div class="gallery-placeholder-label">client-khoj-bin-malak-banner-01.jpg</div>
-      <div class="gallery-overlay">
-        <div class="gallery-overlay-client">Mazar-E-Syedi Khoj Bin Malak</div>
-        <div class="gallery-overlay-project">Banner Design</div>
-      </div>
-    </div>
-    <div class="gallery-item reveal-item" data-client="khoj-bin-malak">
-      <img src="client-khoj-bin-malak-banner-02.jpg" alt="Mazar-E-Syedi Khoj Bin Malak — Banner Design" onerror="this.parentElement.classList.add('img-missing')">
-      <div class="gallery-placeholder-label">client-khoj-bin-malak-banner-02.jpg</div>
-      <div class="gallery-overlay">
-        <div class="gallery-overlay-client">Mazar-E-Syedi Khoj Bin Malak</div>
-        <div class="gallery-overlay-project">Banner Design</div>
-      </div>
-    </div>
-    <div class="gallery-item reveal-item" data-client="khoj-bin-malak">
-      <img src="client-khoj-bin-malak-banner-03.jpg" alt="Mazar-E-Syedi Khoj Bin Malak — Banner Design" onerror="this.parentElement.classList.add('img-missing')">
-      <div class="gallery-placeholder-label">client-khoj-bin-malak-banner-03.jpg</div>
-      <div class="gallery-overlay">
-        <div class="gallery-overlay-client">Mazar-E-Syedi Khoj Bin Malak</div>
-        <div class="gallery-overlay-project">Banner Design</div>
-      </div>
-    </div>
-    <div class="gallery-item reveal-item" data-client="almadrasa-saifiyah">
-      <img src="client-almadrasa-saifiyah-poster-01.jpg" alt="Al Madrasa Tus Saifiyah — Poster Design" onerror="this.parentElement.classList.add('img-missing')">
-      <div class="gallery-placeholder-label">client-almadrasa-saifiyah-poster-01.jpg</div>
-      <div class="gallery-overlay">
-        <div class="gallery-overlay-client">Al Madrasa Tus Saifiyah</div>
-        <div class="gallery-overlay-project">Poster Design</div>
-      </div>
-    </div>
-    <div class="gallery-item reveal-item" data-client="almadrasa-saifiyah">
-      <img src="client-almadrasa-saifiyah-poster-02.jpg" alt="Al Madrasa Tus Saifiyah — Poster Design" onerror="this.parentElement.classList.add('img-missing')">
-      <div class="gallery-placeholder-label">client-almadrasa-saifiyah-poster-02.jpg</div>
-      <div class="gallery-overlay">
-        <div class="gallery-overlay-client">Al Madrasa Tus Saifiyah</div>
-        <div class="gallery-overlay-project">Poster Design</div>
-      </div>
-    </div>
-    <div class="gallery-item reveal-item" data-client="almadrasa-saifiyah">
-      <img src="client-almadrasa-saifiyah-poster-03.jpg" alt="Al Madrasa Tus Saifiyah — Poster Design" onerror="this.parentElement.classList.add('img-missing')">
-      <div class="gallery-placeholder-label">client-almadrasa-saifiyah-poster-03.jpg</div>
-      <div class="gallery-overlay">
-        <div class="gallery-overlay-client">Al Madrasa Tus Saifiyah</div>
-        <div class="gallery-overlay-project">Poster Design</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="lightbox" id="lightbox">
-  <div class="lightbox-close" id="lightboxClose">✕</div>
-  <div class="lightbox-prev" id="lightboxPrev">‹</div>
-  <div class="lightbox-next" id="lightboxNext">›</div>
-  <div class="lightbox-img-wrap">
-    <img id="lightboxImg" src="" alt="">
-    <div class="lightbox-caption" id="lightboxCaption"></div>
+    <div class="work-pin-progress"><span id="workPinBar"></span></div>
   </div>
 </div>
 
-<!-- PHILOSOPHY -->
-<section class="philo-section" id="philosophy">
+<!-- PHILOSOPHY (locked-scroll: quote scales up from a whisper to full size
+     as you scroll, supporting text arrives after, then releases) -->
+<div class="philo-pin-spacer" id="philoPinSpacer">
+<section class="philo-section" id="philoPin">
   <div class="philo-bg">
     <svg viewBox="0 0 100 100" preserveAspectRatio="none">
       <defs><pattern id="ph" x="0" y="0" width="25" height="25" patternUnits="userSpaceOnUse">
@@ -802,23 +812,23 @@ html.lenis{height:auto}
   </div>
   <div class="philo-content">
     <div class="philo-line"></div>
-    <p class="philo-quote fade-scroll">"The Fatimid masters knew what we still practice: <span>perfection lives in proportion.</span>"</p>
-    <p class="philo-text fade-scroll">Every pattern in nature obeys geometry. Every sacred space was built with compass and square. At Maahir Studios, powered by Fatemi Designs, we wield these same tools — not as nostalgia, but as living methodology. The hexagon is not just our mark. It is our method.</p>
+    <p class="philo-quote split-text" id="philoQuote">"The Fatimid masters knew what we still practice: <span>perfection lives in proportion.</span>"</p>
+    <p class="philo-text scroll-highlight" id="philoText">Every pattern in nature obeys geometry. Every sacred space was built with compass and square. At Maahir Studio, powered by Fatemi Designs, we wield these same tools — not as nostalgia, but as living methodology. The hexagon is not just our mark. It is our method.</p>
   </div>
 </section>
+</div>
 
 <!-- FOOTER -->
 <footer class="footer" id="contact">
-  <div class="footer-hero fade-scroll">MAAHIR</div>
+  <div class="footer-hero fade-scroll split-text">MAAHIR</div>
   <div class="footer-grid">
     <div>
-      <div class="footer-brand">Maahir Studios</div>
+      <div class="footer-brand">Maahir Studio</div>
       <div class="footer-tagline">Powered by Fatemi Designs</div>
     </div>
     <div class="footer-col">
       <h4>Navigation</h4>
       <a href="#services">Services</a>
-      <a href="#gallery">Work</a>
     <a href="#clients">Clients</a>
       <a href="#shop">Shop</a>
       <a href="#contact">Contact</a>
@@ -833,10 +843,14 @@ html.lenis{height:auto}
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2026 Maahir Studios</span>
+    <span>© 2026 Maahir Studio</span>
     <span>Built on geometry. Guarded by tradition.</span>
   </div>
 </footer>
+
+</div>
+</div>
+<!-- /smooth-wrapper -->
 
 <script>
 const body = document.body;
@@ -845,6 +859,48 @@ const navToggle = document.getElementById('navToggle');
 const siteMenu = document.getElementById('siteMenu');
 const isTouchDevice = window.matchMedia('(hover: none), (pointer: coarse)').matches;
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ==== GLOBAL LERP SMOOTH SCROLL (hand-rolled Lenis-style) ====
+// #smooth-content is transformed to chase window.scrollY with easing, so
+// wheel/trackpad/touch scrolling feels weighted instead of snapping 1:1.
+// Disabled on touch devices and prefers-reduced-motion, where native
+// scrolling feels better and is more reliable.
+const smoothWrapper = document.getElementById('smooth-wrapper');
+const smoothContent = document.getElementById('smooth-content');
+let currentScroll = 0;
+// Single shared list of per-frame update functions. Every scroll-driven
+// effect below (smooth-scroll, hero/philo/work pins, about pin, fade-scroll)
+// registers its updater here instead of running its own rAF loop — this
+// batches all getBoundingClientRect() reads and style writes into one pass
+// per frame instead of five independent, uncoordinated ones, which avoids
+// forcing the browser to recompute layout multiple times per frame.
+const frameUpdaters = [];
+if (smoothWrapper && smoothContent) {
+  if (isTouchDevice || reduceMotion) {
+    document.documentElement.classList.add('no-smooth-scroll');
+  } else {
+    const setBodyHeight = () => { body.style.height = smoothContent.getBoundingClientRect().height + 'px'; };
+    setBodyHeight();
+    window.addEventListener('resize', setBodyHeight);
+    // Recheck height periodically for late-loading images/content shifts
+    let resizeObs = null;
+    if ('ResizeObserver' in window) {
+      resizeObs = new ResizeObserver(setBodyHeight);
+      resizeObs.observe(smoothContent);
+    }
+    const smoothLoop = () => {
+      const target = window.scrollY;
+      currentScroll += (target - currentScroll) * 0.09;
+      if (Math.abs(target - currentScroll) < 0.05) currentScroll = target;
+      smoothContent.style.transform = `translate3d(0, ${-currentScroll}px, 0)`;
+    };
+    frameUpdaters.push(smoothLoop);
+  }
+}
+// Everything below reads window.scrollY / getBoundingClientRect() as usual —
+// those already reflect the real, transformed visual position, so existing
+// reveal/parallax logic keeps working unchanged on top of the smooth scroll.
+
 
 if (navToggle && siteMenu) {
   navToggle.addEventListener('click', () => {
@@ -890,13 +946,248 @@ if (!reduceMotion) {
     revealItems.forEach(el => el.classList.add('visible'));
   }
 
+  // ==== SPLIT-TEXT WORD REVEAL ====
+  // Wraps each word of .split-text elements in nested spans, then staggers
+  // them up into view as the element crosses into the viewport.
+  document.querySelectorAll('.split-text').forEach(el => {
+    el.innerHTML = el.innerHTML
+      .split(/(<[^>]+>)/g)
+      .map(chunk => {
+        if (/^<[^>]+>$/.test(chunk)) return chunk; // pass any real tag through untouched
+        return chunk.split(' ').filter(Boolean).map(w => `<span class="word">${w}\u00A0</span>`).join('');
+      })
+      .join('');
+    el.querySelectorAll('.word').forEach(w => { w.innerHTML = `<span>${w.textContent}</span>`; });
+  });
+  const splitObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const words = entry.target.querySelectorAll('.word span');
+      words.forEach((w, i) => { w.style.transitionDelay = (i * 45) + 'ms'; });
+      entry.target.classList.add('visible');
+      splitObserver.unobserve(entry.target);
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.split-text').forEach(el => splitObserver.observe(el));
+
+  // ==== MAGNETIC BUTTONS ====
+  // Buttons (and nav links) pull toward the cursor within a radius, then
+  // spring back — the classic "magnetic" hover from high-craft studio sites.
+  document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const r = btn.getBoundingClientRect();
+      const px = e.clientX - (r.left + r.width / 2);
+      const py = e.clientY - (r.top + r.height / 2);
+      btn.style.transform = `translate(${px * 0.35}px, ${py * 0.45}px)`;
+    });
+    btn.addEventListener('mouseleave', () => { btn.style.transform = 'translate(0,0)'; });
+    btn.addEventListener('click', e => {
+      const r = btn.getBoundingClientRect();
+      const ripple = document.createElement('span');
+      ripple.className = 'btn-ripple';
+      const size = Math.max(r.width, r.height) * 1.8;
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = (e.clientX - r.left - size / 2) + 'px';
+      ripple.style.top = (e.clientY - r.top - size / 2) + 'px';
+      btn.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 650);
+    });
+  });
+
+  // ==== PHILOSOPHY: SCROLL-JACKED SCALE REVEAL ====
+  // The quote starts small and hazy, is scaled up to full size as you
+  // scroll through the pin, then the supporting paragraph lights up
+  // word-by-word as you scroll — dim/faded words turn bold and full-color
+  // once you've scrolled past them, like a reading-progress highlight.
+  const philoPinSpacer = document.getElementById('philoPinSpacer');
+  const philoPin = document.getElementById('philoPin');
+  const philoQuote = document.getElementById('philoQuote');
+  const philoText = document.getElementById('philoText');
+  let philoWords = [];
+  if (philoText) {
+    philoText.innerHTML = philoText.textContent.split(' ').filter(Boolean)
+      .map(w => `<span class="word">${w}</span>`).join(' ');
+    philoWords = Array.from(philoText.querySelectorAll('.word'));
+  }
+  if (philoPinSpacer && philoPin && !isTouchDevice) {
+    const updatePhiloPin = () => {
+      const r = philoPinSpacer.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const total = Math.max(1, r.height - vh);
+      let scrolled = -r.top;
+      scrolled = Math.max(0, Math.min(scrolled, total));
+      const progress = scrolled / total;
+
+      philoPin.style.transform = `translateY(${scrolled}px)`;
+
+      // quote: scales from .6 → 1 and sharpens across the first 55%
+      const qp = Math.min(1, progress / 0.55);
+      if (philoQuote) {
+        philoQuote.style.transform = `scale(${(0.6 + qp * 0.4).toFixed(3)})`;
+        philoQuote.style.opacity = String((0.25 + qp * 0.75).toFixed(2));
+      }
+      // supporting text: words light up one by one during the 45%→90% window
+      if (philoWords.length) {
+        const tp = Math.max(0, Math.min(1, (progress - 0.45) / 0.45));
+        const litCount = Math.round(tp * philoWords.length);
+        for (let i = 0; i < philoWords.length; i++) {
+          const shouldBeLit = i < litCount;
+          const isLit = philoWords[i].classList.contains('lit');
+          if (shouldBeLit && !isLit) philoWords[i].classList.add('lit');
+          else if (!shouldBeLit && isLit) philoWords[i].classList.remove('lit');
+        }
+      }
+    };
+    let philoTicking = false;
+    frameUpdaters.push(updatePhiloPin);
+  }
+
+  // ==== WORK SHOWCASE: SCROLL-JACKED SLIDE SWAP ====
+  // Scroll through the spacer holds the panel pinned full-viewport while
+  // mapping scroll progress to which client slide is active — the mouse
+  // wheel is driving "which slide" rather than moving the page, then the
+  // page releases into the normal filterable grid below.
+  const workPinSpacer = document.getElementById('workPinSpacer');
+  const workPin = document.getElementById('workPin');
+  if (workPinSpacer && workPin && !isTouchDevice) {
+    const slides = Array.from(workPin.querySelectorAll('.work-pin-slide'));
+    const bar = document.getElementById('workPinBar');
+    const n = slides.length;
+    let activeIdx = -1;
+    const updateWorkPin = () => {
+      const r = workPinSpacer.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const total = Math.max(1, r.height - vh);
+      let scrolled = -r.top;
+      scrolled = Math.max(0, Math.min(scrolled, total));
+      const progress = scrolled / total;
+
+      workPin.style.transform = `translateY(${scrolled}px)`;
+      if (bar) bar.style.width = (progress * 100).toFixed(1) + '%';
+
+      const idx = Math.min(n - 1, Math.floor(progress * n));
+      if (idx !== activeIdx) {
+        slides.forEach((s, i) => s.classList.toggle('active', i === idx));
+        activeIdx = idx;
+      }
+    };
+    let workTicking = false;
+    frameUpdaters.push(updateWorkPin);
+  }
+
+  // ==== HERO: LOCKED-SCROLL "ZOOM THROUGH" SCENE ====
+  // While the hero-pin-spacer is being scrolled through: the text blurs and
+  // exits first, then the hex object rushes toward the camera (scaling up
+  // ~8x while spinning), a warm gold flash washes over the screen to mask
+  // the cut, and it clears to reveal the marquee/About underneath — a real
+  // locked-scroll scene with a proper transition, not just a fade.
+  const heroPinSpacer = document.getElementById('heroPinSpacer');
+  const heroPin = document.getElementById('heroPin');
+  const heroLeftEl = document.getElementById('heroLeft');
+  const heroFlash = document.getElementById('heroFlash');
+  if (heroPinSpacer && heroPin && smoothWrapper && !isTouchDevice) {
+    const updateHeroScene = () => {
+      const spacerRect = heroPinSpacer.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const total = Math.max(1, spacerRect.height - vh);
+      let scrolled = -spacerRect.top;
+      scrolled = Math.max(0, Math.min(scrolled, total));
+      const progress = scrolled / total;
+
+      // pin: counter-translate so the hero stays put while the spacer
+      // provides scroll runway above/below it
+      heroPin.style.transform = `translateY(${scrolled}px)`;
+
+      // text: blurs, shrinks slightly and exits upward within the first 60%
+      if (heroLeftEl) {
+        const tp = Math.min(1, progress / 0.6);
+        heroLeftEl.style.transform = `translateY(${-tp * 100}px) scale(${1 - tp * 0.08})`;
+        heroLeftEl.style.opacity = String(Math.max(0, 1 - tp * 1.4));
+        heroLeftEl.style.filter = `blur(${(tp * 6).toFixed(1)}px)`;
+      }
+      // hex: rushes toward camera (up to 2.2x scale, was 8x — that combined
+      // with the drop-shadow filter was forcing a full filter-region
+      // recompute every frame, the main cause of scroll lag) while spinning,
+      // staying visible until 60% then fading fast as the flash takes over
+      if (hexContainer) {
+        const hp = Math.min(1, progress / 0.85);
+        hexContainer.style.transform = `scale(${(1 + hp * 1.2).toFixed(2)}) rotate(${(hp * 260).toFixed(1)}deg)`;
+        const hexOpacity = progress < 0.6 ? 1 : Math.max(0, 1 - (progress - 0.6) / 0.2);
+        hexContainer.style.opacity = String(hexOpacity);
+      }
+      // flash: builds 50%→80%, then clears 80%→100% to reveal what's next
+      if (heroFlash) {
+        let flashOp;
+        if (progress < 0.5) flashOp = 0;
+        else if (progress < 0.8) flashOp = (progress - 0.5) / 0.3;
+        else flashOp = Math.max(0, 1 - (progress - 0.8) / 0.2);
+        heroFlash.style.opacity = String(flashOp.toFixed(2));
+      }
+      heroPin.style.opacity = String((1 - Math.max(0, progress - 0.92) / 0.08).toFixed(2));
+    };
+    let heroTicking = false;
+    frameUpdaters.push(updateHeroScene);
+  }
+
+  // ==== HERO HEX: CURSOR-FOLLOW TILT + CLICK POP ====
+  const hexContainer = document.getElementById('hexContainer');
+  const hexObj = document.getElementById('hexObj');
+  if (hexContainer && hexObj && !isTouchDevice) {
+    hexContainer.addEventListener('mousemove', e => {
+      const r = hexContainer.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      hexObj.style.setProperty('--tiltX', (px * 34) + 'deg');
+      hexObj.style.setProperty('--tiltY', (-py * 34) + 'deg');
+    });
+    hexContainer.addEventListener('mouseleave', () => {
+      hexObj.style.setProperty('--tiltX', '0deg');
+      hexObj.style.setProperty('--tiltY', '0deg');
+    });
+  }
+  if (hexObj) {
+    const popHex = () => {
+      hexObj.classList.remove('is-touched');
+      void hexObj.offsetWidth;
+      hexObj.classList.add('is-touched');
+      setTimeout(() => hexObj.classList.remove('is-touched'), 650);
+    };
+    hexObj.addEventListener('click', popHex);
+    hexObj.addEventListener('touchstart', popHex, { passive: true });
+  }
+
+  // ==== ABOUT SECTION: MANUAL STICKY PIN ====
+  // Native `position:sticky` breaks once its ancestor is being transformed
+  // for the smooth-scroll effect above, so the pin is recreated by hand:
+  // while the section is in view, the label column is nudged down to hold
+  // a fixed visual offset from the top of the viewport, clamped so it
+  // never scrolls past the bottom of its own section.
+  const asymSection = document.querySelector('.asymmetric');
+  const sideLabelCol = asymSection ? asymSection.querySelector('.side-label') : null;
+  if (asymSection && sideLabelCol) {
+    const desiredTop = 120;
+    let pinTicking = false;
+    const updatePin = () => {
+      const sectionRect = asymSection.getBoundingClientRect();
+      const labelHeight = sideLabelCol.offsetHeight;
+      let offset = desiredTop - sectionRect.top;
+      const maxOffset = Math.max(0, sectionRect.height - labelHeight);
+      offset = Math.max(0, Math.min(offset, maxOffset));
+      sideLabelCol.style.transform = `translateY(${offset.toFixed(1)}px)`;
+      pinTicking = false;
+    };
+    const onPinFrame = () => { if (!pinTicking) { pinTicking = true; requestAnimationFrame(() => { pinTicking = false; }); } };
+    window.addEventListener('resize', onPinFrame);
+    updatePin();
+    frameUpdaters.push(updatePin);
+  }
+
   // ==== TYPOGRAPHY OPACITY ON SCROLL ====
   // Each .fade-scroll element's opacity is driven live by how close it is
   // to the vertical centre of the viewport: fades UP as it arrives, fades
   // back DOWN as it scrolls away — not a one-shot reveal.
   const fadeEls = Array.from(document.querySelectorAll('.fade-scroll'));
   if (fadeEls.length) {
-    let fadeTicking = false;
     const updateFade = () => {
       const vh = window.innerHeight;
       const center = vh / 2;
@@ -909,17 +1200,10 @@ if (!reduceMotion) {
         opacity = 0.12 + opacity * 0.88; // never fully vanish, floor at .12
         el.style.opacity = opacity.toFixed(3);
       });
-      fadeTicking = false;
     };
-    const onScrollFade = () => {
-      if (!fadeTicking) {
-        fadeTicking = true;
-        requestAnimationFrame(updateFade);
-      }
-    };
-    window.addEventListener('scroll', onScrollFade, { passive: true });
-    window.addEventListener('resize', onScrollFade);
+    window.addEventListener('resize', updateFade);
     updateFade();
+    frameUpdaters.push(updateFade);
   }
 
   // ==== FOLDER-TOUCH REACTION ====
@@ -945,9 +1229,8 @@ if (!reduceMotion) {
         magCursor.style.left = cX + 'px';
         magCursor.style.top = cY + 'px';
       }
-      requestAnimationFrame(magLoop);
     };
-    requestAnimationFrame(magLoop);
+    frameUpdaters.push(magLoop);
     document.querySelectorAll('a,.service-row,.work-panel,.btn,.product-link').forEach(el => {
       el.addEventListener('mouseenter', () => magCursor && magCursor.classList.add('expanded'));
       el.addEventListener('mouseleave', () => magCursor && magCursor.classList.remove('expanded'));
@@ -955,102 +1238,29 @@ if (!reduceMotion) {
 
     // Logo rotation now handled entirely by lightweight CSS animation (see .ms-logo-wrap)
 
-    // GALLERY: filtering, staggered reveal, lightbox
-    (function() {
-      const grid = document.getElementById('galleryGrid');
-      if (!grid) return;
-      const items = Array.from(grid.querySelectorAll('.gallery-item'));
-      const filterBtns = document.querySelectorAll('.gallery-filter-btn');
-
-      // fisheye hover — image bulges & tilts toward the cursor
-      items.forEach(it => {
-        it.addEventListener('mousemove', e => {
-          const r = it.getBoundingClientRect();
-          const px = (e.clientX - r.left) / r.width;
-          const py = (e.clientY - r.top) / r.height;
-          it.style.setProperty('--mx', (px * 100) + '%');
-          it.style.setProperty('--my', (py * 100) + '%');
-          it.style.setProperty('--rx', ((px - 0.5) * 14) + 'deg');
-          it.style.setProperty('--ry', ((0.5 - py) * 14) + 'deg');
-        });
-        it.addEventListener('mouseleave', () => {
-          it.style.setProperty('--mx', '50%');
-          it.style.setProperty('--my', '50%');
-          it.style.setProperty('--rx', '0deg');
-          it.style.setProperty('--ry', '0deg');
-        });
+    // CLIENT FOLDERS: tap-to-open on touch devices (hover already handles desktop)
+    document.querySelectorAll('.client-folder').forEach(folder => {
+      folder.addEventListener('click', () => {
+        document.querySelectorAll('.client-folder.open').forEach(f => { if (f !== folder) f.classList.remove('open'); });
+        folder.classList.toggle('open');
       });
+    });
 
-      // staggered scroll reveal
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach((entry, idx) => {
-          if (entry.isIntersecting) {
-            const visibleItems = items.filter(it => !it.classList.contains('filtered-out'));
-            const order = visibleItems.indexOf(entry.target);
-            setTimeout(() => entry.target.classList.add('visible'), Math.max(order,0) * 70);
-            io.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.15 });
-      items.forEach(it => io.observe(it));
-
-      // filtering
-      filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          filterBtns.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          const filter = btn.dataset.filter;
-          items.forEach(it => {
-            const match = filter === 'all' || it.dataset.client === filter;
-            it.classList.toggle('filtered-out', !match);
-            if (match) {
-              it.classList.remove('visible');
-              io.observe(it);
-              setTimeout(() => it.classList.add('visible'), 50);
-            }
-          });
-        });
-      });
-
-      // lightbox
-      const lightbox = document.getElementById('lightbox');
-      const lightboxImg = document.getElementById('lightboxImg');
-      const lightboxCaption = document.getElementById('lightboxCaption');
-      let currentIndex = 0;
-
-      function getVisibleItems() {
-        return items.filter(it => !it.classList.contains('filtered-out'));
-      }
-      function openLightbox(idx) {
-        const visible = getVisibleItems();
-        if (!visible.length) return;
-        currentIndex = (idx + visible.length) % visible.length;
-        const it = visible[currentIndex];
-        const img = it.querySelector('img');
-        lightboxImg.src = img.src;
-        const client = it.querySelector('.gallery-overlay-client').textContent;
-        const project = it.querySelector('.gallery-overlay-project').textContent;
-        lightboxCaption.textContent = client + ' — ' + project;
-        lightbox.classList.add('active');
-      }
-      items.forEach((it) => {
-        it.addEventListener('click', () => {
-          const visible = getVisibleItems();
-          openLightbox(visible.indexOf(it));
-        });
-      });
-      document.getElementById('lightboxClose').addEventListener('click', () => lightbox.classList.remove('active'));
-      document.getElementById('lightboxPrev').addEventListener('click', () => openLightbox(currentIndex - 1));
-      document.getElementById('lightboxNext').addEventListener('click', () => openLightbox(currentIndex + 1));
-      lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.classList.remove('active'); });
-      document.addEventListener('keydown', (e) => {
-        if (!lightbox.classList.contains('active')) return;
-        if (e.key === 'Escape') lightbox.classList.remove('active');
-        if (e.key === 'ArrowLeft') openLightbox(currentIndex - 1);
-        if (e.key === 'ArrowRight') openLightbox(currentIndex + 1);
-      });
-    })();
   }
+}
+
+// ==== SINGLE MASTER FRAME LOOP ====
+// Every scroll-driven effect above pushed its updater into frameUpdaters
+// instead of running its own rAF loop. Running them all from one loop means
+// all the getBoundingClientRect() reads and style writes for a given frame
+// happen together, instead of five independent loops each forcing their own
+// layout pass — smoother motion, much less CPU/battery burned per frame.
+if (frameUpdaters.length) {
+  const masterLoop = () => {
+    for (let i = 0; i < frameUpdaters.length; i++) frameUpdaters[i]();
+    requestAnimationFrame(masterLoop);
+  };
+  requestAnimationFrame(masterLoop);
 }
 </script>
 </body>
