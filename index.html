@@ -69,15 +69,12 @@ html.no-smooth-scroll #smooth-content{transform:none !important}
 .main-nav .menu a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:#fff;transition:width .5s cubic-bezier(.16,1,.3,1)}
 .main-nav .menu a:hover{opacity:1}.main-nav .menu a:hover::after{width:100%}
 
-/* ==== PHILOSOPHY: SCROLL-JACKED SCALE REVEAL ==== */
-.philo-pin-spacer{position:relative;height:250vh}
-.philo-section{will-change:transform}
-#philoQuote{will-change:transform,opacity;transform-origin:50% 50%}
-#philoText{will-change:opacity,transform}
-.scroll-highlight .word{color:rgba(245,240,235,.22);transition:color .25s ease;font-weight:500}
+/* ==== PHILOSOPHY: SCROLL REVEAL (no scroll-jacking — plays once, in place) ==== */
+.philo-pin-spacer{position:relative}
+#philoQuote{transform-origin:50% 50%;opacity:0;transform:scale(.88) translateY(18px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1.1s cubic-bezier(.16,1,.3,1)}
+#philoQuote.visible{opacity:1;transform:scale(1) translateY(0)}
+.scroll-highlight .word{color:rgba(245,240,235,.22);transition:color .6s ease;font-weight:500}
 .scroll-highlight .word.lit{color:var(--text);font-weight:700}
-html.no-smooth-scroll .philo-pin-spacer{height:auto}
-html.no-smooth-scroll #philoText{opacity:1;transform:none}
 
 /* ==== WORK SHOWCASE: SCROLL-JACKED SLIDE SWAP ==== */
 .work-pin-spacer{position:relative;height:500vh}
@@ -154,13 +151,13 @@ html.no-smooth-scroll .hero{position:relative}
 /* ==== ABOUT — ASYMMETRIC ==== */
 .about-outer{position:relative;overflow:hidden;padding:160px 0}
 .asymmetric{position:relative;max-width:1400px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:42% 58%;gap:60px;align-items:start;z-index:2}
-.about-photo-scroll{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;pointer-events:none;z-index:0;opacity:.16;overflow:hidden;-webkit-mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent)}
-.about-scroll-row{display:flex;gap:20px;flex-shrink:0;animation:aboutScrollLeft 50s linear infinite}
-.about-scroll-row img{width:320px;aspect-ratio:16/9;object-fit:cover;border-radius:6px;filter:grayscale(.3);flex-shrink:0}
+.about-photo-scroll{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;pointer-events:none;z-index:0;opacity:.32;overflow:hidden;-webkit-mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent)}
+.about-scroll-row{display:flex;gap:20px;flex-shrink:0;animation:aboutScrollLeft 30s cubic-bezier(.45,0,.55,1) infinite}
+.about-scroll-row img{width:400px;aspect-ratio:16/9;object-fit:contain;object-position:center;background:rgba(15,15,15,.05);border-radius:6px;filter:grayscale(.3);flex-shrink:0}
 @keyframes aboutScrollLeft{from{transform:translateX(-50%)}to{transform:translateX(0)}}
 .asymmetric .side-label,.asymmetric .content{position:relative;z-index:2}
-.asymmetric .content{background:linear-gradient(90deg,var(--bg) 60%,rgba(245,240,235,.85) 100%)}
-.asymmetric .side-label{position:relative;min-height:60vh;display:flex;flex-direction:column;justify-content:center;will-change:transform}
+.asymmetric .content,.asymmetric .side-label{background:rgba(245,240,235,.42);backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);border:1px solid rgba(255,255,255,.55);border-radius:22px;box-shadow:0 8px 40px rgba(15,15,15,.07),inset 0 1px 0 rgba(255,255,255,.6);padding:40px 44px}
+.asymmetric .side-label{min-height:60vh;display:flex;flex-direction:column;justify-content:center;will-change:transform}
 .asymmetric .side-label-tag{font-family:var(--font-mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.2em;color:var(--text-muted);display:block}
 .asymmetric .side-label-tag::before{content:'';display:block;width:40px;height:1px;background:var(--gold);margin-bottom:20px}
 .asymmetric .content h2,.asymmetric .side-label h2{font-family:var(--font-serif);font-size:clamp(3rem,7vw,6rem);font-weight:600;line-height:1.05;letter-spacing:-.02em;margin-top:28px;margin-bottom:0}
@@ -352,6 +349,8 @@ html.no-smooth-scroll .hero{position:relative}
   .hero-hex-container{width:min(78vw,360px);height:min(78vw,360px)}
   .asymmetric,.services,.shop-section,.testi-section,.footer{padding-left:20px;padding-right:20px}
   .asymmetric{padding-top:100px;padding-bottom:100px;gap:28px}
+  .asymmetric .content,.asymmetric .side-label{padding:26px 24px;border-radius:16px}
+  .about-scroll-row img{width:260px}
   .work-header{padding:0 20px 40px;gap:16px;align-items:flex-start;flex-direction:column}
   .work-track{padding:0 20px 40px;gap:20px}
   .work-panel{flex-basis:88vw}
@@ -917,6 +916,44 @@ if (navToggle && siteMenu) {
   });
 }
 
+// ==== IN-PAGE ANCHOR LINKS (nav, footer, CTA buttons) ====
+// The hand-rolled smooth-scroll wrapper above pins #smooth-wrapper with
+// position:fixed and fakes scroll via a transform, which the browser's
+// native "jump to #hash" behaviour doesn't account for — clicking a link
+// like href="#services" could land in the wrong place or appear to do
+// nothing. This computes the real target position from its current
+// on-screen rect (which already reflects the smooth-scroll transform) and
+// drives window.scrollTo directly, so every in-page link works the same
+// way regardless of the custom scroll setup.
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  const hash = link.getAttribute('href');
+  if (!hash || hash.length < 2) return;
+  const target = document.querySelector(hash);
+  if (!target) return;
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const targetY = target.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({ top: Math.max(0, targetY), behavior: (smoothWrapper && smoothContent && !isTouchDevice && !reduceMotion) ? 'auto' : 'smooth' });
+    history.pushState(null, '', hash);
+  });
+});
+
+// ==== CLIENT FOLDERS: tap/click to open on every device ====
+// Runs unconditionally (not gated behind touch/motion checks) so the
+// folder-splay animation always responds to a click or tap.
+document.querySelectorAll('.client-folder').forEach(folder => {
+  folder.addEventListener('click', () => {
+    document.querySelectorAll('.client-folder.open').forEach(f => { if (f !== folder) f.classList.remove('open'); });
+    folder.classList.toggle('open');
+  });
+  folder.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      folder.click();
+    }
+  });
+});
+
 document.querySelectorAll('.service-row').forEach(row => {
   row.setAttribute('tabindex', '0');
   row.setAttribute('role', 'button');
@@ -994,13 +1031,11 @@ if (!reduceMotion) {
     });
   });
 
-  // ==== PHILOSOPHY: SCROLL-JACKED SCALE REVEAL ====
-  // The quote starts small and hazy, is scaled up to full size as you
-  // scroll through the pin, then the supporting paragraph lights up
-  // word-by-word as you scroll — dim/faded words turn bold and full-color
-  // once you've scrolled past them, like a reading-progress highlight.
-  const philoPinSpacer = document.getElementById('philoPinSpacer');
-  const philoPin = document.getElementById('philoPin');
+  // ==== PHILOSOPHY: SCROLL REVEAL ====
+  // No more scroll-jacking/pinning (it made this section feel slow to get
+  // through). The quote now simply scales/fades in once when it enters
+  // view, then the supporting line lights up word-by-word right after —
+  // a quick, one-time animation instead of a scroll-locked scene.
   const philoQuote = document.getElementById('philoQuote');
   const philoText = document.getElementById('philoText');
   let philoWords = [];
@@ -1009,37 +1044,18 @@ if (!reduceMotion) {
       .map(w => `<span class="word">${w}</span>`).join(' ');
     philoWords = Array.from(philoText.querySelectorAll('.word'));
   }
-  if (philoPinSpacer && philoPin && !isTouchDevice) {
-    const updatePhiloPin = () => {
-      const r = philoPinSpacer.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const total = Math.max(1, r.height - vh);
-      let scrolled = -r.top;
-      scrolled = Math.max(0, Math.min(scrolled, total));
-      const progress = scrolled / total;
-
-      philoPin.style.transform = `translateY(${scrolled}px)`;
-
-      // quote: scales from .6 → 1 and sharpens across the first 55%
-      const qp = Math.min(1, progress / 0.55);
-      if (philoQuote) {
-        philoQuote.style.transform = `scale(${(0.6 + qp * 0.4).toFixed(3)})`;
-        philoQuote.style.opacity = String((0.25 + qp * 0.75).toFixed(2));
-      }
-      // supporting text: words light up one by one during the 45%→90% window
-      if (philoWords.length) {
-        const tp = Math.max(0, Math.min(1, (progress - 0.45) / 0.45));
-        const litCount = Math.round(tp * philoWords.length);
-        for (let i = 0; i < philoWords.length; i++) {
-          const shouldBeLit = i < litCount;
-          const isLit = philoWords[i].classList.contains('lit');
-          if (shouldBeLit && !isLit) philoWords[i].classList.add('lit');
-          else if (!shouldBeLit && isLit) philoWords[i].classList.remove('lit');
-        }
-      }
-    };
-    let philoTicking = false;
-    frameUpdaters.push(updatePhiloPin);
+  if (philoQuote) {
+    const philoObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        philoQuote.classList.add('visible');
+        philoWords.forEach((w, i) => {
+          setTimeout(() => w.classList.add('lit'), 500 + i * 55);
+        });
+        philoObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.4 });
+    philoObserver.observe(philoQuote);
   }
 
   // ==== WORK SHOWCASE: SCROLL-JACKED SLIDE SWAP ====
@@ -1237,16 +1253,8 @@ if (!reduceMotion) {
     });
 
     // Logo rotation now handled entirely by lightweight CSS animation (see .ms-logo-wrap)
-
-    // CLIENT FOLDERS: tap-to-open on touch devices (hover already handles desktop)
-    document.querySelectorAll('.client-folder').forEach(folder => {
-      folder.addEventListener('click', () => {
-        document.querySelectorAll('.client-folder.open').forEach(f => { if (f !== folder) f.classList.remove('open'); });
-        folder.classList.toggle('open');
-      });
-    });
-
   }
+
 }
 
 // ==== SINGLE MASTER FRAME LOOP ====
