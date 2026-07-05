@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ashara Mubaraka 1448H — حرفة المرء كنزه | Interactive Reflections</title>
+<meta name="description" content="An interactive infographic experience exploring the reflections of Ashara Mubaraka 1448H — the kalaam of Maulana Ali AS: A man's talent and skills are his treasure.">
+<meta name="robots" content="index, follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+/* ===== RESET & ROOT ===== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg-deep:#FBF8F2;
+  --bg-section:#F5F0E6;
+  --bg-card:rgba(255,255,255,0.85);
+  --gold:#B8923D;
+  --gold-light:#D4B05C;
+  --gold-dark:#8b6914;
+  --gold-glow:rgba(184,146,61,0.25);
+  --emerald:#0F6B47;
+  --emerald-light:#1a8a5c;
+  --emerald-glow:rgba(15,107,71,0.18);
+  --text-primary:#241F14;
+  --text-secondary:rgba(36,31,20,0.68);
+  --text-muted:rgba(36,31,20,0.45);
+  --font-arabic:'Amiri',serif;
+  --font-display:'Playfair Display',serif;
+  --font-body:'Inter',sans-serif;
+  --border-gold:rgba(184,146,61,0.3);
+  --radius:16px;
+}
+
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{
+  background:var(--bg-deep);
+  color:var(--text-primary);
+  font-family:var(--font-body);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* ===== CUSTOM SCROLLBAR ===== */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg-deep)}
+::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--gold)}
+
+/* ===== LOADING SCREEN ===== */
+#loader{
+  position:fixed;inset:0;z-index:10000;
+  background:var(--bg-deep);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity 0.8s ease, visibility 0.8s ease;
+}
+#loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
+#loader .loader-ornament{
+  width:60px;height:60px;
+  border:2px solid var(--gold-dark);
+  border-top-color:var(--gold-light);
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loader .loader-text{
+  font-family:var(--font-arabic);
+  font-size:1.92rem;
+  color:var(--gold);
+  margin-top:24px;
+  letter-spacing:2px;
+}
+
+/* ===== GLOBAL PATTERNS ===== */
+.geometric-bg{
+  position:absolute;inset:0;pointer-events:none;z-index:0;
+  opacity:0.03;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 80px,var(--gold) 80px,var(--gold) 81px),
+    repeating-linear-gradient(90deg,transparent,transparent 80px,var(--gold) 80px,var(--gold) 81px),
+    repeating-linear-gradient(45deg,transparent,transparent 113px,var(--gold) 113px,var(--gold) 114px),
+    repeating-linear-gradient(-45deg,transparent,transparent 113px,var(--gold) 113px,var(--gold) 114px);
+}
+
+/* ===== NAVIGATION ===== */
+.site-nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  padding:20px 40px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(180deg,rgba(251,248,242,0.95) 0%,rgba(251,248,242,0) 100%);
+  backdrop-filter:blur(20px);
+  transition:background 0.4s ease;
+}
+.nav-brand{
+  font-family:var(--font-display);
+  font-size:1.408rem;
+  color:var(--gold);
+  text-decoration:none;
+  letter-spacing:1px;
+  display:flex;align-items:center;gap:12px;
+}
+.nav-brand .nav-dot{
+  width:8px;height:8px;background:var(--gold);border-radius:50%;
+  box-shadow:0 0 12px var(--gold-glow);
+}
+.nav-links{display:flex;gap:32px;align-items:center}
+.nav-links a{
+  font-size:1.024rem;
+  text-transform:uppercase;
+  letter-spacing:2px;
+  color:var(--text-secondary);
+  text-decoration:none;
+  transition:color 0.3s ease;
+  font-weight:500;
+}
+.nav-links a:hover{color:var(--gold)}
+.nav-year{
+  font-family:var(--font-arabic);
+  font-size:1.28rem;
+  color:var(--gold);
+  border:1px solid var(--border-gold);
+  padding:6px 16px;
+  border-radius:100px;
+}
+
+/* ===== SECTION 1: KALAM COVER ===== */
+#cover-section{
+  position:relative;
+  min-height:400vh;
+  overflow:hidden;
+}
+.cover-pin{
+  position:relative;
+  width:100%;height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.cover-particles{
+  position:absolute;inset:0;z-index:0;
+}
+.cover-particles .particle{
+  position:absolute;
+  width:2px;height:2px;
+  background:var(--gold);
+  border-radius:50%;
+  opacity:0;
+  animation:float-particle 6s ease-in-out infinite;
+}
+@keyframes float-particle{
+  0%,100%{opacity:0;transform:translateY(0) scale(0.5)}
+  50%{opacity:0.6;transform:translateY(-100px) scale(1)}
+}
+.cover-content{
+  position:relative;z-index:2;
+  text-align:center;
+  max-width:900px;
+  padding:0 40px;
+}
+.cover-badge{
+  display:inline-flex;align-items:center;gap:10px;
+  border:1px solid var(--border-gold);
+  padding:8px 24px;
+  border-radius:100px;
+  margin-bottom:40px;
+  font-size:0.96rem;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--text-secondary);
+  opacity:0;
+}
+.cover-badge .badge-line{
+  width:20px;height:1px;background:var(--gold);
+}
+.kalam-arabic{
+  font-family:var(--font-arabic);
+  font-size:clamp(3.2rem,6vw,6.4rem);
+  font-weight:700;
+  line-height:1.6;
+  color:var(--text-primary);
+  margin-bottom:16px;
+  direction:rtl;
+  opacity:0;
+}
+.kalam-arabic .word{
+  display:inline-block;
+  transition:all 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
+  position:relative;
+}
+.kalam-arabic .word.highlight{
+  color:var(--gold-light);
+  text-shadow:0 0 40px var(--gold-glow),0 0 80px rgba(201,168,76,0.15);
+  transform:scale(1.15);
+}
+.kalam-arabic .word.dim{
+  opacity:0.25;
+  filter:blur(1px);
+}
+.kalam-translation{
+  font-family:var(--font-display);
+  font-size:clamp(1.28rem,2vw,1.92rem);
+  font-style:italic;
+  color:var(--text-secondary);
+  margin-bottom:8px;
+  opacity:0;
+}
+.kalam-attribution{
+  font-size:1.024rem;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--gold-dark);
+  margin-bottom:60px;
+  opacity:0;
+}
+
+/* Treasure reveal */
+.treasure-container{
+  position:relative;
+  width:320px;height:320px;
+  margin:0 auto;
+  opacity:0;
+  transform:scale(0.5);
+}
+.treasure-glow{
+  position:absolute;
+  inset:-40px;
+  background:radial-gradient(circle,var(--gold-glow) 0%,transparent 70%);
+  border-radius:50%;
+  animation:pulse-glow 3s ease-in-out infinite;
+}
+@keyframes pulse-glow{
+  0%,100%{opacity:0.5;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.1)}
+}
+.treasure-image{
+  position:relative;z-index:1;
+  width:100%;height:100%;
+  object-fit:contain;
+  filter:drop-shadow(0 20px 60px rgba(201,168,76,0.4));
+}
+.treasure-label{
+  position:absolute;
+  bottom:-50px;left:50%;
+  transform:translateX(-50%);
+  font-family:var(--font-display);
+  font-size:2.304rem;
+  font-weight:600;
+  color:var(--gold-light);
+  white-space:nowrap;
+  letter-spacing:4px;
+  text-shadow:0 0 30px var(--gold-glow);
+  opacity:0;
+}
+
+/* Ornamental dividers */
+.ornament-divider{
+  display:flex;align-items:center;justify-content:center;gap:16px;
+  padding:60px 0;
+  opacity:0;
+}
+.ornament-divider .line{
+  width:80px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.ornament-divider .diamond{
+  width:8px;height:8px;
+  background:var(--gold);
+  transform:rotate(45deg);
+}
+
+/* ===== SCROLL INDICATOR ===== */
+.scroll-indicator{
+  position:absolute;
+  bottom:40px;left:50%;
+  transform:translateX(-50%);
+  display:flex;flex-direction:column;
+  align-items:center;gap:8px;
+  z-index:5;
+  opacity:0;
+}
+.scroll-indicator .scroll-text{
+  font-size:0.832rem;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--text-muted);
+}
+.scroll-indicator .scroll-line{
+  width:1px;height:40px;
+  background:linear-gradient(180deg,var(--gold),transparent);
+  animation:scroll-pulse 2s ease-in-out infinite;
+}
+@keyframes scroll-pulse{
+  0%,100%{opacity:0.3;height:40px}
+  50%{opacity:1;height:50px}
+}
+
+/* ===== MEANING REVEAL CARDS ===== */
+.meaning-reveal{
+  position:absolute;
+  z-index:10;
+  opacity:0;
+  pointer-events:none;
+}
+.meaning-card{
+  background:var(--bg-card);
+  border:1px solid var(--border-gold);
+  border-radius:var(--radius);
+  padding:40px 48px;
+  text-align:center;
+  backdrop-filter:blur(40px);
+  box-shadow:0 30px 80px rgba(0,0,0,0.5),0 0 60px var(--gold-glow);
+  max-width:440px;
+}
+.meaning-card .meaning-word{
+  font-family:var(--font-arabic);
+  font-size:3.2rem;
+  font-weight:700;
+  color:var(--gold-light);
+  margin-bottom:12px;
+  text-shadow:0 0 30px var(--gold-glow);
+}
+.meaning-card .meaning-equals{
+  font-size:2.56rem;
+  color:var(--gold-dark);
+  margin-bottom:12px;
+}
+.meaning-card .meaning-english{
+  font-family:var(--font-display);
+  font-size:2.56rem;
+  font-weight:600;
+  color:var(--text-primary);
+  margin-bottom:8px;
+}
+.meaning-card .meaning-desc{
+  font-size:1.088rem;
+  color:var(--text-secondary);
+  line-height:1.7;
+}
+
+/* ===== SECTION 2: TAZYEEN ===== */
+#tazyeen-section{
+  position:relative;
+  min-height:100vh;
+  padding:120px 40px;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.tazyeen-container{
+  position:relative;
+  text-align:center;
+  max-width:1000px;
+  width:100%;
+}
+.tazyeen-header{
+  margin-bottom:60px;
+}
+.tazyeen-header .section-label{
+  font-size:0.896rem;
+  letter-spacing:5px;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:16px;
+}
+.tazyeen-header h2{
+  font-family:var(--font-display);
+  font-size:clamp(2.304rem,3.5vw,3.584rem);
+  font-weight:400;
+  color:var(--text-primary);
+  line-height:1.4;
+}
+.tazyeen-header h2 em{
+  color:var(--gold-light);
+  font-style:italic;
+}
+
+/* SVG Tazyeen */
+.tazyeen-artwork{
+  position:relative;
+  width:100%;
+  max-width:600px;
+  margin:0 auto 60px;
+  cursor:pointer;
+}
+.tazyeen-svg-container{
+  position:relative;
+  padding:60px 40px;
+  border:1px solid var(--border-gold);
+  border-radius:var(--radius);
+  background:rgba(255,255,255,0.55);
+  backdrop-filter:blur(20px);
+  transition:all 0.5s ease;
+}
+.tazyeen-svg-container:hover{
+  border-color:var(--gold);
+  box-shadow:0 0 60px var(--gold-glow);
+  transform:translateY(-4px);
+}
+.tazyeen-image{max-width:78%;max-height:360px;object-fit:contain;filter:drop-shadow(0 10px 40px rgba(184,146,61,0.35));transition:transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94),filter 0.6s ease}
+.tazyeen-svg-container:hover .tazyeen-image{transform:scale(1.06);filter:drop-shadow(0 15px 55px rgba(184,146,61,0.5))}
+.tazyeen-name{
+  font-family:var(--font-arabic);
+  font-size:clamp(3.84rem,8vw,7.68rem);
+  font-weight:700;
+  color:var(--gold-light);
+  text-shadow:0 0 40px var(--gold-glow);
+  line-height:1.4;
+  direction:rtl;
+  position:relative;
+}
+/* Decorative lines around name */
+.tazyeen-line{
+  position:absolute;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  height:1px;
+  left:10%;right:10%;
+}
+.tazyeen-line.top{top:30px}
+.tazyeen-line.bottom{bottom:30px}
+.tazyeen-line-v{
+  position:absolute;
+  background:linear-gradient(180deg,transparent,var(--gold),transparent);
+  width:1px;
+  top:20%;bottom:20%;
+}
+.tazyeen-line-v.left{left:20px}
+.tazyeen-line-v.right{right:20px}
+
+/* Corners */
+.tazyeen-corner{
+  position:absolute;
+  width:20px;height:20px;
+  border-color:var(--gold);
+  border-style:solid;
+}
+.tazyeen-corner.tl{top:10px;left:10px;border-width:1px 0 0 1px}
+.tazyeen-corner.tr{top:10px;right:10px;border-width:1px 1px 0 0}
+.tazyeen-corner.bl{bottom:10px;left:10px;border-width:0 0 1px 1px}
+.tazyeen-corner.br{bottom:10px;right:10px;border-width:0 1px 1px 0}
+
+.tazyeen-subtitle{
+  font-family:var(--font-display);
+  font-size:1.28rem;
+  color:var(--text-secondary);
+  margin-top:16px;
+  font-style:italic;
+}
+.tazyeen-cta{
+  display:inline-flex;align-items:center;gap:8px;
+  margin-top:20px;
+  font-size:0.96rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--gold);
+  opacity:0.7;
+  transition:opacity 0.3s;
+}
+.tazyeen-svg-container:hover .tazyeen-cta{opacity:1}
+
+/* Majlis 5 panel */
+.majlis5-panel{
+  position:fixed;
+  top:0;right:-100%;
+  width:min(600px,90vw);
+  height:100vh;
+  z-index:2000;
+  background:var(--bg-card);
+  backdrop-filter:blur(20px) saturate(160%);
+  border-left:1px solid var(--border-gold);
+  padding:80px 48px 48px;
+  overflow-y:auto;
+  transition:right 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
+  box-shadow:-20px 0 80px rgba(80,60,20,0.15);
+}
+.majlis5-panel.open{right:0}
+.majlis5-overlay{
+  position:fixed;inset:0;z-index:1999;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(8px);
+  opacity:0;visibility:hidden;
+  transition:all 0.4s ease;
+}
+.majlis5-overlay.open{opacity:1;visibility:visible}
+.panel-close{
+  position:absolute;top:24px;right:24px;
+  width:40px;height:40px;
+  border:1px solid var(--border-gold);
+  border-radius:50%;
+  background:none;
+  color:var(--text-secondary);
+  font-size:1.536rem;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.3s ease;
+}
+.panel-close:hover{border-color:var(--gold);color:var(--gold)}
+.panel-tag{
+  font-size:0.896rem;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:16px;
+}
+.panel-title{
+  font-family:var(--font-display);
+  font-size:2.56rem;
+  font-weight:400;
+  color:var(--text-primary);
+  margin-bottom:8px;
+}
+.panel-date{
+  font-size:1.088rem;
+  color:var(--text-muted);
+  margin-bottom:32px;
+  padding-bottom:32px;
+  border-bottom:1px solid var(--border-gold);
+}
+.panel-body{
+  font-size:1.216rem;
+  line-height:1.9;
+  color:var(--text-secondary);
+}
+.panel-body p{margin-bottom:20px}
+.panel-body .arabic-quote{
+  font-family:var(--font-arabic);
+  font-size:1.92rem;
+  color:var(--gold-light);
+  text-align:center;
+  direction:rtl;
+  padding:24px 0;
+  margin:24px 0;
+  border-top:1px solid var(--border-gold);
+  border-bottom:1px solid var(--border-gold);
+}
+.panel-source{
+  margin-top:32px;
+  padding-top:24px;
+  border-top:1px solid var(--border-gold);
+  font-size:1.024rem;
+  color:var(--text-muted);
+}
+.panel-source a{color:var(--gold);text-decoration:none}
+.panel-source a:hover{text-decoration:underline}
+
+/* ===== CONNECTION LINE from tazyeen to content ===== */
+.connection-flow{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:0;
+  margin-bottom:40px;
+}
+.connection-line{
+  width:1px;
+  height:80px;
+  background:linear-gradient(180deg,var(--gold),var(--emerald));
+}
+.connection-node{
+  width:16px;height:16px;
+  border:2px solid var(--emerald);
+  border-radius:50%;
+  background:var(--bg-deep);
+  position:relative;
+}
+.connection-node::after{
+  content:'';
+  position:absolute;
+  inset:3px;
+  background:var(--emerald);
+  border-radius:50%;
+  animation:node-pulse 2s ease-in-out infinite;
+}
+@keyframes node-pulse{
+  0%,100%{opacity:0.5}
+  50%{opacity:1}
+}
+
+/* ===== SECTION 3: PLANETARY ORBITS ===== */
+#orbits-section{
+  position:relative;
+  min-height:100vh;
+  padding:80px 40px 120px;
+}
+.orbits-header{
+  text-align:center;
+  margin-bottom:60px;
+  position:relative;
+  z-index:2;
+}
+.orbits-header .section-label{
+  font-size:0.896rem;
+  letter-spacing:5px;
+  text-transform:uppercase;
+  color:var(--emerald-light);
+  margin-bottom:16px;
+}
+.orbits-header h2{
+  font-family:var(--font-display);
+  font-size:clamp(2.304rem,3.5vw,3.584rem);
+  font-weight:400;
+  color:var(--text-primary);
+  line-height:1.4;
+  margin-bottom:16px;
+}
+.orbits-header p{
+  font-size:1.152rem;
+  color:var(--text-secondary);
+  max-width:600px;
+  margin:0 auto;
+  line-height:1.7;
+}
+
+#three-canvas{
+  width:100%;
+  height:80vh;
+  min-height:600px;
+  position:relative;
+  z-index:1;
+  cursor:grab;
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+#three-canvas:active{cursor:grabbing}
+
+/* Planet info tooltip */
+.planet-tooltip{
+  position:fixed;
+  z-index:100;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 0.3s ease;
+  transform:translate(-50%,-120%);
+}
+.planet-tooltip.visible{opacity:1}
+.planet-tooltip-inner{
+  background:var(--bg-card);
+  border:1px solid var(--border-gold);
+  border-radius:12px;
+  padding:16px 24px;
+  text-align:center;
+  backdrop-filter:blur(20px);
+  box-shadow:0 10px 40px rgba(0,0,0,0.5);
+  white-space:nowrap;
+}
+.planet-tooltip .tooltip-majlis{
+  font-size:0.832rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:4px;
+}
+.planet-tooltip .tooltip-title{
+  font-family:var(--font-display);
+  font-size:1.28rem;
+  color:var(--text-primary);
+}
+
+/* Majlis Modal */
+.majlis-modal-overlay{
+  position:fixed;top:0;right:0;bottom:0;z-index:3000;
+  width:min(460px,92vw);
+  background:transparent;
+  pointer-events:none;
+  opacity:0;visibility:hidden;
+  transition:all 0.4s ease;
+  display:flex;align-items:center;justify-content:flex-end;
+  padding:32px;
+}
+.majlis-modal-overlay.open{opacity:1;visibility:visible;pointer-events:auto}
+.majlis-modal{
+  background:var(--bg-card);
+  backdrop-filter:blur(20px) saturate(160%);
+  border:1px solid var(--border-gold);
+  border-radius:var(--radius);
+  width:100%;
+  max-height:78vh;
+  overflow-y:auto;
+  padding:44px 40px;
+  position:relative;
+  box-shadow:0 30px 80px rgba(80,60,20,0.18),0 0 60px var(--gold-glow);
+  transform:translateX(30px) scale(0.96);
+  transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.majlis-modal-overlay.open .majlis-modal{transform:translateX(0) scale(1)}
+.modal-close{
+  position:absolute;top:20px;right:20px;
+  width:36px;height:36px;
+  border:1px solid var(--border-gold);
+  border-radius:50%;
+  background:none;
+  color:var(--text-secondary);
+  font-size:1.28rem;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.3s ease;
+}
+.modal-close:hover{border-color:var(--gold);color:var(--gold)}
+.modal-tag{
+  font-size:0.896rem;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:12px;
+}
+.modal-number{
+  font-family:var(--font-display);
+  font-size:5.12rem;
+  font-weight:600;
+  color:rgba(201,168,76,0.15);
+  position:absolute;
+  top:20px;left:48px;
+}
+.modal-title{
+  font-family:var(--font-display);
+  font-size:2.048rem;
+  font-weight:400;
+  color:var(--text-primary);
+  margin-bottom:8px;
+}
+.modal-date{
+  font-size:1.088rem;
+  color:var(--text-muted);
+  margin-bottom:28px;
+  padding-bottom:28px;
+  border-bottom:1px solid var(--border-gold);
+}
+.modal-body{
+  font-size:1.178rem;
+  line-height:1.85;
+  color:var(--text-secondary);
+}
+.modal-body p{margin-bottom:16px}
+.modal-body .arabic-inline{
+  font-family:var(--font-arabic);
+  font-size:1.664rem;
+  color:var(--gold-light);
+  direction:rtl;
+  display:block;
+  text-align:center;
+  padding:16px 0;
+  margin:16px 0;
+  border-top:1px solid var(--border-gold);
+  border-bottom:1px solid var(--border-gold);
+}
+
+/* ===== FOOTER ===== */
+.site-footer{
+  position:relative;
+  padding:80px 40px 40px;
+  text-align:center;
+  border-top:1px solid var(--border-gold);
+}
+.footer-ornament{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  margin-bottom:32px;
+}
+.footer-ornament .f-line{
+  width:60px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold-dark),transparent);
+}
+.footer-ornament .f-diamond{
+  width:6px;height:6px;background:var(--gold-dark);transform:rotate(45deg);
+}
+.footer-text{
+  font-size:1.024rem;
+  color:var(--text-muted);
+  margin-bottom:8px;
+}
+.footer-source{
+  font-size:0.896rem;
+  color:var(--text-muted);
+}
+.footer-source a{color:var(--gold-dark);text-decoration:none}
+.footer-source a:hover{color:var(--gold)}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+  .site-nav{padding:16px 20px}
+  .nav-links{display:none}
+  .cover-content{padding:0 20px}
+  .kalam-arabic{font-size:2.816rem}
+  .treasure-container{width:220px;height:220px}
+  #tazyeen-section{padding:80px 20px}
+  .tazyeen-svg-container{padding:40px 24px}
+  .tazyeen-name{font-size:3.84rem}
+  #orbits-section{padding:60px 20px 80px}
+  .majlis5-panel{padding:60px 24px 24px;width:100vw}
+  .majlis-modal{padding:32px 24px}
+  .orbits-header h2{font-size:2.048rem}
+}
+
+/* ===== AMBIENT ANIMATION ===== */
+.ambient-orb{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(80px);
+  opacity:0.12;
+  pointer-events:none;
+  z-index:0;
+}
+.ambient-orb.gold{
+  width:400px;height:400px;
+  background:var(--gold);
+}
+.ambient-orb.emerald{
+  width:300px;height:300px;
+  background:var(--emerald);
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div id="loader">
+  <div class="loader-ornament"></div>
+  <div class="loader-text">١٤٤٨ هـ</div>
+</div>
+
+<!-- NAVIGATION -->
+<nav class="site-nav" id="siteNav">
+  <a href="index.html" class="nav-brand">
+    <span class="nav-dot"></span>
+    Maahir Studio
+  </a>
+  <div class="nav-links">
+    <a href="#cover-section">Kalaam</a>
+    <a href="#tazyeen-section">Tazyeen</a>
+    <a href="#orbits-section">Majalis</a>
+  </div>
+  <div class="nav-year">١٤٤٨ هـ</div>
+</nav>
+
+<!-- ============================================= -->
+<!-- SECTION 1: KALAM COVER                        -->
+<!-- ============================================= -->
+<section id="cover-section">
+  <div class="geometric-bg"></div>
+  
+  <!-- Ambient orbs -->
+  <div class="ambient-orb gold" style="top:10%;left:-5%"></div>
+  <div class="ambient-orb emerald" style="bottom:20%;right:-5%"></div>
+  
+  <div class="cover-pin" id="coverPin">
+    <!-- Particles -->
+    <div class="cover-particles" id="coverParticles"></div>
+    
+    <div class="cover-content">
+      <div class="cover-badge" id="coverBadge">
+        <span class="badge-line"></span>
+        Ashara Mubaraka 1448H — London
+        <span class="badge-line"></span>
+      </div>
+      
+      <div class="kalam-arabic" id="kalamArabic">
+        <span class="word" data-word="hirfa">حِرْفَةُ</span>
+        <span class="word" data-word="al-mar">الْمَرْءِ</span>
+        <span class="word" data-word="kanzuhu">كَنْزُهُ</span>
+      </div>
+      
+      <div class="kalam-translation" id="kalamTranslation">
+        "A man's talent and skills are his treasure"
+      </div>
+      
+      <div class="kalam-attribution" id="kalamAttribution">
+        — Kalaam of Maulana Ali AS
+      </div>
+      
+      <!-- Meaning reveal card (hidden, animates in) -->
+      <div class="meaning-reveal" id="meaningReveal">
+        <div class="meaning-card">
+          <div class="meaning-word">كَنْزُهُ</div>
+          <div class="meaning-equals">⟶</div>
+          <div class="meaning-english">TREASURE</div>
+          <div class="meaning-desc">The skill one cultivates is not merely a means of livelihood — it is an enduring treasure, a repository of value that enriches the self and benefits all.</div>
+        </div>
+      </div>
+      
+      <!-- Treasure chest (hidden, animates in) -->
+      <div class="treasure-container" id="treasureChest">
+        <div class="treasure-glow"></div>
+        <img src="treasure_chest.jpg" alt="Golden treasure chest with Islamic geometric patterns" class="treasure-image">
+        <div class="treasure-label" id="treasureLabel">T R E A S U R E</div>
+      </div>
+    </div>
+    
+    <div class="scroll-indicator" id="scrollIndicator">
+      <span class="scroll-text">Scroll to explore</span>
+      <div class="scroll-line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Ornament divider -->
+<div class="ornament-divider" id="divider1">
+  <div class="line"></div>
+  <div class="diamond"></div>
+  <div class="line"></div>
+</div>
+
+<!-- ============================================= -->
+<!-- SECTION 2: TAZYEEN + MAJLIS 5                 -->
+<!-- ============================================= -->
+<section id="tazyeen-section">
+  <div class="geometric-bg"></div>
+  <div class="ambient-orb gold" style="top:5%;right:10%"></div>
+  
+  <div class="tazyeen-container">
+    <div class="tazyeen-header">
+      <div class="section-label">Section II — The Tazyeen</div>
+      <h2>The Sacred Adornment of <em>Mohammed</em></h2>
+    </div>
+    
+    <!-- SVG Tazyeen artwork -->
+    <div class="tazyeen-artwork" id="tazveenArtwork" onmouseenter="openMajlis5()" onmouseleave="closeMajlis5()">
+      <div class="tazyeen-svg-container">
+        <div class="tazyeen-corner tl"></div>
+        <div class="tazyeen-corner tr"></div>
+        <div class="tazyeen-corner bl"></div>
+        <div class="tazyeen-corner br"></div>
+        <div class="tazyeen-line top"></div>
+        <div class="tazyeen-line bottom"></div>
+        <div class="tazyeen-line-v left"></div>
+        <div class="tazyeen-line-v right"></div>
+        <img src="tazyeen-ring.png" alt="Tazyeen Mubaraka" class="tazyeen-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="tazyeen-name" style="display:none">مُحَمَّد ﷺ</div>
+        <div class="tazyeen-subtitle">The Adornment — Tazyeen Mubaraka</div>
+        <div class="tazyeen-cta">
+          <span>Hover to read Majlis 5 →</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Connection line from tazyeen to content -->
+    <div class="connection-flow">
+      <div class="connection-line"></div>
+      <div class="connection-node"></div>
+      <div class="connection-line"></div>
+    </div>
+    
+    <p style="font-size:1.088rem;color:var(--text-muted);max-width:500px;margin:0 auto;text-align:center;line-height:1.7">
+      The Tazyeen Mubaraka — a symbol of divine artistry — connects to the discourse of Majlis 5 which explores the craft of architecture and construction. Click above to read the full reflection.
+    </p>
+  </div>
+</section>
+
+<!-- Majlis 5 Slide Panel -->
+<div class="majlis5-overlay" id="majlis5Overlay" onclick="closeMajlis5()"></div>
+<div class="majlis5-panel" id="majlis5Panel" onmouseenter="openMajlis5()" onmouseleave="closeMajlis5()">
+  <button class="panel-close" onclick="closeMajlis5()">✕</button>
+  <div class="panel-tag">Majlis 5 / 1448H</div>
+  <h2 class="panel-title">Architecture & Construction</h2>
+  <div class="panel-date">6th al-Muharram al-Haraam</div>
+  <div class="panel-body">
+    <p>In this fifth waʿz mubarak, Syedna al-Dai al-Ajal TUS expounded upon the craft of architecture and construction — drawing parallels between the physical structures that shelter mankind and the spiritual edifices that protect the soul.</p>
+    <div class="arabic-quote">صُنْعَ اللَّهِ الَّذِي أَتْقَنَ كُلَّ شَيْءٍ</div>
+    <p><em>"The doing of Allah who perfected all things."</em></p>
+    <p>The Tazyeen Mubaraka, with its exquisite geometric precision and layered symbolism, stands as a living embodiment of this verse. Each line, each curve, each interlocking form within the tazyeen reflects the divine philosophy of itqaan — perfection in creation.</p>
+    <p>Architecture, Syedna TUS elaborated, is not merely about constructing physical shelters but about building communities, fostering connections, and creating spaces where faith and learning can flourish. The greatest architecture is the architecture of the soul — constructed through knowledge, refined through worship, and adorned through the remembrance of Imam Husain AS.</p>
+    <p>The Duat Mutlaqeen have always been master builders — not just of physical structures like the magnificent masajid and madrasas that dot the landscape of Dawat — but of human character and spiritual resolve.</p>
+  </div>
+  <div class="panel-source">
+    Source: <a href="https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-5-1448h/" target="_blank">Blogs Aljamea-tus-Saifiyah</a>
+  </div>
+</div>
+
+<!-- Ornament divider -->
+<div class="ornament-divider" id="divider2">
+  <div class="line"></div>
+  <div class="diamond"></div>
+  <div class="diamond"></div>
+  <div class="diamond"></div>
+  <div class="line"></div>
+</div>
+
+<!-- ============================================= -->
+<!-- SECTION 3: PLANETARY ORBITS                   -->
+<!-- ============================================= -->
+<section id="orbits-section">
+  <div class="geometric-bg"></div>
+  <div class="ambient-orb emerald" style="top:10%;left:5%"></div>
+  <div class="ambient-orb gold" style="bottom:10%;right:5%"></div>
+  
+  <div class="orbits-header">
+    <div class="section-label">Section III — The Constellations of Knowledge</div>
+    <h2>Ten Majalis — Ten Worlds of Wisdom</h2>
+    <p>Each majlis represents a unique realm of knowledge. Explore the cosmic arrangement of Ashara Mubaraka's ten discourses — hover and click to reveal each reflection.</p>
+  </div>
+  
+  <div id="three-canvas"></div>
+</section>
+
+<!-- Planet tooltip -->
+<div class="planet-tooltip" id="planetTooltip">
+  <div class="planet-tooltip-inner">
+    <div class="tooltip-majlis" id="tooltipMajlis"></div>
+    <div class="tooltip-title" id="tooltipTitle"></div>
+  </div>
+</div>
+
+<!-- Majlis Modal (for planet clicks) -->
+<div class="majlis-modal-overlay" id="majlisModalOverlay">
+  <div class="majlis-modal" id="majlisModal">
+    <button class="modal-close" id="modalClose">✕</button>
+    <div class="modal-number" id="modalNumber"></div>
+    <div class="modal-tag" id="modalTag"></div>
+    <h2 class="modal-title" id="modalTitle"></h2>
+    <div class="modal-date" id="modalDate"></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="site-footer">
+  <div class="footer-ornament">
+    <div class="f-line"></div>
+    <div class="f-diamond"></div>
+    <div class="f-diamond"></div>
+    <div class="f-diamond"></div>
+    <div class="f-line"></div>
+  </div>
+  <div class="footer-text">Ashara Mubaraka 1448H — An Interactive Infographic Experience</div>
+  <div class="footer-text" style="font-family:var(--font-arabic);font-size:1.408rem;color:var(--gold-dark);margin-bottom:16px">
+    حِرْفَةُ الْمَرْءِ كَنْزُهُ
+  </div>
+  <div class="footer-source">
+    Content sourced from <a href="https://blogs.jameasaifiyah.edu" target="_blank">Blogs Aljamea-tus-Saifiyah</a> · Crafted by <a href="https://maahirstudio.site" target="_blank">Maahir Studio</a>
+  </div>
+</footer>
+
+<script>
+// ===== MAJLIS DATA =====
+const majlisData = [
+  {
+    num: 1,
+    title: "Clothing & Cuisine",
+    date: "2nd al-Muharram al-Haraam",
+    theme: "The parallels between the tailor and the chef — six shared virtues of measurement, seasonality, ornamentation, punctuality, precision, and restoration.",
+    body: `<p>The opening address reminded attendees of the true essence of Ashara Mubaraka: heartfelt zikr and buka upon Maulana al-Imam al-Husain AS.</p><p>Syedna al-Dai al-Ajal TUS announced this year's theme: a range of trades, crafts, and skills. The first waʿz explored clothing and food as the principal framework.</p><div class="arabic-inline">حِرْفَةُ الْمَرْءِ كَنْزُهُ</div><p><em>"A man's talent and skills are his treasure"</em></p><p>Six points of similitude between tailoring and cuisine were explored: estimation and measurement, suitability to season, simplicity vs ornamentation, punctuality, the use of cutting instruments to remove excess, and the joy that skilled work brings. Each was connected to interpersonal relationships and the actions of Imam Husain AS in Karbala.</p>`,
+    color: '#c9a84c',
+    link: "https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-1-6/"
+  },
+  {
+    num: 2,
+    title: "Commerce & Trade",
+    date: "3rd al-Muharram al-Haraam",
+    theme: "The ethics of trade and commerce as reflected in the teachings of Aimmat Tahereen AS.",
+    body: `<p>The second majlis explored the world of commerce and trade — the principles of honest dealing, fair measure, and ethical business practices as taught by the Aimmat Tahereen AS.</p><p>Syedna TUS drew connections between the merchant's craft and the spiritual marketplace where good deeds are the currency and divine pleasure is the ultimate profit.</p>`,
+    color: '#e8d48b',
+    link: "https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-2-6/"
+  },
+  {
+    num: 3,
+    title: "Medicine & Healing",
+    date: "4th al-Muharram al-Haraam",
+    theme: "The healer's art — physical and spiritual remedies drawn from prophetic tradition.",
+    body: `<p>The third waʿz mubarak was devoted to the noble craft of medicine and healing. Syedna al-Dai al-Ajal TUS expounded upon the parallels between physical healing and spiritual restoration.</p><p>Just as a physician diagnoses ailments and prescribes remedies, the Dai al-Mutlaq diagnoses spiritual maladies and provides the cure through knowledge and guidance.</p>`,
+    color: '#2dd693',
+    link: "https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-3-1448h/"
+  },
+  {
+    num: 4,
+    title: "Agriculture & Farming",
+    date: "5th al-Muharram al-Haraam",
+    theme: "The farmer's patience — sowing seeds of knowledge, reaping harvests of wisdom.",
+    body: `<p>In the fourth majlis, Syedna TUS explored the ancient and noble craft of agriculture — the patience required to sow, nurture, and harvest.</p><p>The metaphor of farming was beautifully connected to the cultivation of the soul: just as seeds need water, sunlight, and care, the human spirit needs knowledge, devotion, and the remembrance of Imam Husain AS to flourish.</p>`,
+    color: '#7bdcb5',
+    link: "https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-4-1448h/"
+  },
+  {
+    num: 5,
+    title: "Architecture & Construction",
+    date: "6th al-Muharram al-Haraam",
+    theme: "Building structures of faith — the architect's precision reflected in spiritual edifices.",
+    body: `<p>The fifth waʿz mubarak explored architecture and construction. The Tazyeen Mubaraka — with its exquisite geometric precision — embodies the verse: "The doing of Allah who perfected all things."</p><div class="arabic-inline">صُنْعَ اللَّهِ الَّذِي أَتْقَنَ كُلَّ شَيْءٍ</div><p>Architecture is not merely about constructing physical shelters but about building communities, fostering connections, and creating spaces where faith and learning can flourish.</p>`,
+    color: '#c9a84c',
+    link: "https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-5-1448h/"
+  },
+  {
+    num: 6,
+    title: "Calligraphy & Writing",
+    date: "7th al-Muharram al-Haraam",
+    theme: "The pen's sacred journey — from ink to illumination, the written word as divine craft.",
+    body: `<p>The sixth majlis was devoted to calligraphy and the art of writing — one of the most revered crafts in Islamic tradition. Syedna TUS spoke of the Quran's exaltation of the pen.</p><p>The calligrapher's discipline, patience, and pursuit of perfection mirror the spiritual journey of the faithful. Each stroke carries meaning, each letter holds beauty.</p>`,
+    color: '#e8d48b',
+    link: "https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-6-1448h/"
+  },
+  {
+    num: 7,
+    title: "Navigation & Seafaring",
+    date: "8th al-Muharram al-Haraam",
+    theme: "Charting the course — the navigator's faith in unseen shores.",
+    body: `<p>The seventh waʿz mubarak explored the craft of navigation and seafaring. The vastness of the ocean serves as a metaphor for the journey of life — uncertain, challenging, yet ultimately guided by divine light.</p><p>Syedna TUS spoke of the Dai as the navigator who steers the ship of Dawat through turbulent waters, guided by the celestial compass of the Imam's noor.</p>`,
+    color: '#4ecdc4',
+    link: "https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-7-1448h/"
+  },
+  {
+    num: 8,
+    title: "Metallurgy & Craftsmanship",
+    date: "9th al-Muharram al-Haraam",
+    theme: "Forging character — the blacksmith's fire that tempers the soul.",
+    body: `<p>The eighth majlis drew upon the craft of metallurgy and the work of the blacksmith. Just as raw ore must be heated, hammered, and refined to produce a gleaming blade, the human soul is tempered through trials and tribulations.</p><p>The fire of Karbala, rather than destroying, refined and elevated — producing the most luminous example of sacrifice and devotion in human history.</p>`,
+    color: '#ff6b6b',
+    link: "https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-8-1448h/"
+  },
+  {
+    num: 9,
+    title: "Education & Teaching",
+    date: "10th al-Muharram al-Haraam (Morning)",
+    theme: "The teacher's legacy — knowledge as the most enduring gift.",
+    body: `<p>The ninth discourse honoured the craft of teaching and education — the noblest of all professions. Syedna TUS spoke of the Aimmat and Duat as the supreme educators of humanity.</p><p>The waʿz of Ashara Mubaraka itself is the highest form of education: a curriculum of the soul, taught by the Dai who inherits the knowledge of the Prophets and Imams.</p>`,
+    color: '#a78bfa',
+    link: "https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-9-10-1448h/"
+  },
+  {
+    num: 10,
+    title: "The Essence of All Crafts",
+    date: "10th al-Muharram al-Haraam (ʿAashura)",
+    theme: "The culmination — all crafts converge in the remembrance of Imam Husain AS.",
+    body: `<p>The final and most poignant majlis brought together all the threads of the preceding discourses. Every craft, every skill, every talent finds its ultimate purpose in the zikr of Imam Husain AS.</p><p>The shahadat of Imam Husain AS is the treasure that encompasses all treasures — the supreme craft of sacrifice that teaches every soul the meaning of devotion, courage, and eternal love.</p>`,
+    color: '#f472b6',
+    link: "https://blogs.jameasaifiyah.edu/reflection/ashara/1448h/reflections-majlis-9-10-1448h/"
+  }
+];
+
+// ===== LOADER =====
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hidden');
+    initAnimations();
+  }, 1500);
+});
+
+// ===== PARTICLES =====
+function createParticles() {
+  const container = document.getElementById('coverParticles');
+  for (let i = 0; i < 50; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.top = Math.random() * 100 + '%';
+    p.style.animationDelay = Math.random() * 6 + 's';
+    p.style.animationDuration = (4 + Math.random() * 4) + 's';
+    container.appendChild(p);
+  }
+}
+createParticles();
+
+// ===== GSAP ANIMATIONS =====
+function initAnimations() {
+  gsap.registerPlugin(ScrollTrigger);
+  
+  // Cover entrance
+  const tl = gsap.timeline();
+  tl.to('#coverBadge', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' })
+    .to('#kalamArabic', { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }, '-=0.4')
+    .to('#kalamTranslation', { opacity: 1, duration: 0.8 }, '-=0.5')
+    .to('#kalamAttribution', { opacity: 1, duration: 0.6 }, '-=0.4')
+    .to('#scrollIndicator', { opacity: 1, duration: 0.6 }, '-=0.3');
+  
+  // Pin the cover
+  ScrollTrigger.create({
+    trigger: '#cover-section',
+    start: 'top top',
+    end: '+=300%',
+    pin: '#coverPin',
+    pinSpacing: true,
+  });
+  
+  // Scroll animation: highlight kanzuhu
+  const words = document.querySelectorAll('.kalam-arabic .word');
+  
+  // Phase 1: Dim other words, highlight كنزه
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: '#cover-section',
+      start: 'top top',
+      end: '+=30%',
+      scrub: 1,
+    }
+  })
+  .to(words[0], { className: 'word dim' }, 0)
+  .to(words[1], { className: 'word dim' }, 0)
+  .to(words[2], { className: 'word highlight' }, 0);
+  
+  // Phase 2: Show meaning card
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: '#cover-section',
+      start: '15% top',
+      end: '+=20%',
+      scrub: 1,
+    }
+  })
+  .fromTo('#meaningReveal', 
+    { opacity: 0, y: 40, scale: 0.9 },
+    { opacity: 1, y: 0, scale: 1, pointerEvents: 'auto' }
+  );
+  
+  // Phase 3: Hide meaning, show treasure
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: '#cover-section',
+      start: '40% top',
+      end: '+=25%',
+      scrub: 1,
+    }
+  })
+  .to('#meaningReveal', { opacity: 0, y: -30, duration: 0.3 })
+  .to('#kalamArabic', { opacity: 0, y: -20 }, 0)
+  .to('#kalamTranslation', { opacity: 0 }, 0)
+  .to('#kalamAttribution', { opacity: 0 }, 0)
+  .to('#scrollIndicator', { opacity: 0 }, 0)
+  .to('#treasureChest', { opacity: 1, scale: 1, duration: 0.8, ease: 'back.out(1.4)' }, 0.2)
+  .to('#treasureLabel', { opacity: 1, duration: 0.6 }, 0.5);
+  
+  // Dividers
+  gsap.utils.toArray('.ornament-divider').forEach(div => {
+    gsap.to(div, {
+      opacity: 1,
+      scrollTrigger: {
+        trigger: div,
+        start: 'top 80%',
+        end: 'top 60%',
+        scrub: 1,
+      }
+    });
+  });
+  
+  // Tazyeen section entrance
+  gsap.from('.tazyeen-header', {
+    opacity: 0, y: 40,
+    scrollTrigger: {
+      trigger: '#tazyeen-section',
+      start: 'top 70%',
+      end: 'top 40%',
+      scrub: 1,
+    }
+  });
+  gsap.from('.tazyeen-artwork', {
+    opacity: 0, scale: 0.9,
+    scrollTrigger: {
+      trigger: '.tazyeen-artwork',
+      start: 'top 75%',
+      end: 'top 45%',
+      scrub: 1,
+    }
+  });
+  
+  // Orbits section
+  gsap.from('.orbits-header', {
+    opacity: 0, y: 40,
+    scrollTrigger: {
+      trigger: '#orbits-section',
+      start: 'top 70%',
+      end: 'top 40%',
+      scrub: 1,
+    }
+  });
+}
+
+// ===== MAJLIS 5 PANEL =====
+function openMajlis5() {
+  document.getElementById('majlis5Panel').classList.add('open');
+}
+function closeMajlis5() {
+  document.getElementById('majlis5Panel').classList.remove('open');
+}
+
+// ===== MAJLIS MODAL =====
+function openMajlisModal(index) {
+  const d = majlisData[index];
+  document.getElementById('modalNumber').textContent = String(d.num).padStart(2, '0');
+  document.getElementById('modalTag').textContent = `Majlis ${d.num} / 1448H`;
+  document.getElementById('modalTitle').textContent = d.title;
+  document.getElementById('modalDate').textContent = d.date;
+  document.getElementById('modalBody').innerHTML = d.body;
+  document.getElementById('majlisModalOverlay').classList.add('open');
+}
+function closeMajlisModal() {
+  document.getElementById('majlisModalOverlay').classList.remove('open');
+}
+document.getElementById('modalClose').addEventListener('click', closeMajlisModal);
+
+// ===== THREE.JS PLANETARY ORBITS =====
+(function initThreeScene() {
+  const container = document.getElementById('three-canvas');
+  const W = container.clientWidth;
+  const H = container.clientHeight;
+  
+  // Scene
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0xFBF8F2, 0.0016);
+  
+  // Camera
+  const camera = new THREE.PerspectiveCamera(60, W / H, 0.1, 3000);
+  camera.position.set(0, 170, 400);
+  camera.lookAt(0, 0, 0);
+  
+  // Renderer
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setSize(W, H);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0xFBF8F2, 1);
+  container.appendChild(renderer.domElement);
+  
+  // Lights
+  const ambientLight = new THREE.AmbientLight(0xfff4e0, 0.9);
+  scene.add(ambientLight);
+  
+  const pointLight = new THREE.PointLight(0xc9a84c, 2, 500);
+  pointLight.position.set(0, 0, 0);
+  scene.add(pointLight);
+  
+  const pointLight2 = new THREE.PointLight(0x1a8a5c, 1, 300);
+  pointLight2.position.set(100, 50, -100);
+  scene.add(pointLight2);
+  
+  // Central glowing orb (represents the kalam)
+  const centralGeo = new THREE.SphereGeometry(20, 64, 64);
+  const centralMat = new THREE.MeshStandardMaterial({
+    color: 0xc9a84c,
+    emissive: 0xc9a84c,
+    emissiveIntensity: 0.8,
+    metalness: 0.9,
+    roughness: 0.1,
+  });
+  const centralOrb = new THREE.Mesh(centralGeo, centralMat);
+  scene.add(centralOrb);
+  
+  // Central glow sprite
+  const glowCanvas = document.createElement('canvas');
+  glowCanvas.width = 256;
+  glowCanvas.height = 256;
+  const ctx = glowCanvas.getContext('2d');
+  const gradient = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
+  gradient.addColorStop(0, 'rgba(201,168,76,0.6)');
+  gradient.addColorStop(0.4, 'rgba(201,168,76,0.15)');
+  gradient.addColorStop(1, 'rgba(201,168,76,0)');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, 256, 256);
+  const glowTexture = new THREE.CanvasTexture(glowCanvas);
+  const glowMat = new THREE.SpriteMaterial({ map: glowTexture, transparent: true, opacity: 0.8 });
+  const glowSprite = new THREE.Sprite(glowMat);
+  glowSprite.scale.set(130, 130, 1);
+  scene.add(glowSprite);
+  
+  // Orbits and planets
+  const planets = [];
+  const orbitGroups = [];
+  const orbitRadii = [55, 78, 102, 128, 156, 186, 218, 252, 288, 326];
+  const orbitSpeeds = [0.0035, 0.003, 0.0026, 0.0022, 0.0019, 0.0016, 0.0014, 0.0012, 0.001, 0.0009];
+  const orbitTilts = [0.1, -0.15, 0.2, -0.1, 0.05, -0.2, 0.15, -0.05, 0.1, -0.12];
+  
+  majlisData.forEach((m, i) => {
+    // Orbit ring
+    const orbitGeo = new THREE.RingGeometry(orbitRadii[i] - 0.15, orbitRadii[i] + 0.15, 128);
+    const orbitMat = new THREE.MeshBasicMaterial({
+      color: new THREE.Color(m.color),
+      transparent: true,
+      opacity: 0.15,
+      side: THREE.DoubleSide,
+    });
+    const orbitMesh = new THREE.Mesh(orbitGeo, orbitMat);
+    orbitMesh.rotation.x = Math.PI / 2;
+    orbitMesh.rotation.y = orbitTilts[i];
+    scene.add(orbitMesh);
+    
+    // Planet group (for rotation)
+    const group = new THREE.Group();
+    group.rotation.y = orbitTilts[i];
+    
+    // Planet
+    const planetSize = 7 + (10 - i) * 0.55;
+    const planetGeo = new THREE.SphereGeometry(planetSize, 32, 32);
+    const planetMat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(m.color),
+      emissive: new THREE.Color(m.color),
+      emissiveIntensity: 0.4,
+      metalness: 0.7,
+      roughness: 0.3,
+    });
+    const planetMesh = new THREE.Mesh(planetGeo, planetMat);
+    
+    // Position on orbit
+    const angle = (i / majlisData.length) * Math.PI * 2;
+    planetMesh.position.set(
+      Math.cos(angle) * orbitRadii[i],
+      0,
+      Math.sin(angle) * orbitRadii[i]
+    );
+    
+    planetMesh.userData = { index: i, data: m };
+    group.add(planetMesh);
+    scene.add(group);
+    
+    // Number badge — a small canvas-texture sprite that always faces the
+    // camera, sitting just above the planet, so its majlis number is
+    // legible at a glance even while the whole thing orbits.
+    const badgeCanvas = document.createElement('canvas');
+    badgeCanvas.width = 128; badgeCanvas.height = 128;
+    const bctx = badgeCanvas.getContext('2d');
+    bctx.fillStyle = '#FBF8F2';
+    bctx.beginPath();
+    bctx.arc(64, 64, 58, 0, Math.PI * 2);
+    bctx.fill();
+    bctx.lineWidth = 6;
+    bctx.strokeStyle = m.color;
+    bctx.stroke();
+    bctx.fillStyle = m.color;
+    bctx.font = 'bold 54px Georgia, serif';
+    bctx.textAlign = 'center';
+    bctx.textBaseline = 'middle';
+    bctx.fillText(String(m.num), 64, 70);
+    const badgeTex = new THREE.CanvasTexture(badgeCanvas);
+    const badgeMat = new THREE.SpriteMaterial({ map: badgeTex, transparent: true, depthTest: false });
+    const badgeSprite = new THREE.Sprite(badgeMat);
+    const badgeScale = planetSize * 0.95;
+    badgeSprite.scale.set(badgeScale, badgeScale, 1);
+    badgeSprite.position.set(0, planetSize + badgeScale * 0.55, 0);
+    planetMesh.add(badgeSprite);
+    
+    planets.push(planetMesh);
+    orbitGroups.push(group);
+  });
+  
+  // Stars background
+  const starsGeo = new THREE.BufferGeometry();
+  const starPositions = [];
+  for (let i = 0; i < 2200; i++) {
+    starPositions.push(
+      (Math.random() - 0.5) * 2400,
+      (Math.random() - 0.5) * 2400,
+      (Math.random() - 0.5) * 2400
+    );
+  }
+  starsGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPositions, 3));
+  const starsMat = new THREE.PointsMaterial({ color: 0xB8923D, size: 0.6, transparent: true, opacity: 0.25 });
+  const stars = new THREE.Points(starsGeo, starsMat);
+  scene.add(stars);
+  
+  // Mouse interaction
+  const mouse = new THREE.Vector2();
+  const raycaster = new THREE.Raycaster();
+  let hoveredPlanet = null;
+  let isDragging = false;
+  let prevMouseX = 0;
+  let prevMouseY = 0;
+  let rotX = 0.3;
+  let rotY = 0;
+  let targetRotX = 0.3;
+  let targetRotY = 0;
+  
+  const tooltip = document.getElementById('planetTooltip');
+  
+  container.addEventListener('mousemove', (e) => {
+    const rect = container.getBoundingClientRect();
+    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    
+    if (isDragging) {
+      const dx = e.clientX - prevMouseX;
+      const dy = e.clientY - prevMouseY;
+      targetRotY += dx * 0.005;
+      targetRotX += dy * 0.005;
+      targetRotX = Math.max(-0.8, Math.min(0.8, targetRotX));
+      prevMouseX = e.clientX;
+      prevMouseY = e.clientY;
+    }
+    
+    // Tooltip position
+    tooltip.style.left = e.clientX + 'px';
+    tooltip.style.top = e.clientY + 'px';
+  });
+  
+  container.addEventListener('mousedown', (e) => {
+    // Only start a camera drag if not currently hovering a planet
+    if (!hoveredPlanet) {
+      isDragging = true;
+      prevMouseX = e.clientX;
+      prevMouseY = e.clientY;
+    }
+  });
+  
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+  
+  // Animation loop
+  function animate() {
+    requestAnimationFrame(animate);
+    
+    // Rotate orbit groups — paused while any planet is hovered so the
+    // reader can study the content without it drifting away
+    if (!hoveredPlanet) {
+      orbitGroups.forEach((g, i) => {
+        g.rotation.y += orbitSpeeds[i];
+      });
+    }
+    
+    // Central orb pulse
+    const pulse = 1 + Math.sin(Date.now() * 0.002) * 0.05;
+    centralOrb.scale.set(pulse, pulse, pulse);
+    
+    // Camera rotation (drag)
+    rotX += (targetRotX - rotX) * 0.05;
+    rotY += (targetRotY - rotY) * 0.05;
+    
+    camera.position.x = 400 * Math.sin(rotY) * Math.cos(rotX);
+    camera.position.y = 400 * Math.sin(rotX);
+    camera.position.z = 400 * Math.cos(rotY) * Math.cos(rotX);
+    camera.lookAt(0, 0, 0);
+    
+    // Stars slow rotation
+    stars.rotation.y += 0.0001;
+    
+    // Raycasting for hover — this is now the ONLY way content opens,
+    // no click required. Hovering pauses rotation and opens the side
+    // card; moving away resumes rotation and closes it.
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(planets);
+    
+    if (intersects.length > 0) {
+      const planet = intersects[0].object;
+      if (hoveredPlanet !== planet) {
+        // Reset previous
+        if (hoveredPlanet) {
+          hoveredPlanet.material.emissiveIntensity = 0.4;
+          hoveredPlanet.scale.set(1, 1, 1);
+        }
+        hoveredPlanet = planet;
+        hoveredPlanet.material.emissiveIntensity = 1.1;
+        hoveredPlanet.scale.set(1.35, 1.35, 1.35);
+        container.style.cursor = 'pointer';
+        
+        document.getElementById('tooltipMajlis').textContent = `Majlis ${planet.userData.data.num}`;
+        document.getElementById('tooltipTitle').textContent = planet.userData.data.title;
+        tooltip.classList.add('visible');
+        openMajlisModal(planet.userData.index);
+      }
+    } else {
+      if (hoveredPlanet) {
+        hoveredPlanet.material.emissiveIntensity = 0.4;
+        hoveredPlanet.scale.set(1, 1, 1);
+        hoveredPlanet = null;
+        container.style.cursor = 'grab';
+        tooltip.classList.remove('visible');
+        closeMajlisModal();
+      }
+    }
+    
+    renderer.render(scene, camera);
+  }
+  animate();
+  
+  // Resize
+  window.addEventListener('resize', () => {
+    const w = container.clientWidth;
+    const h = container.clientHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  });
+})();
+</script>
+</body>
+</html>
