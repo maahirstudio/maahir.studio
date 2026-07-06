@@ -47,6 +47,25 @@ a{color:inherit}
 .work-media.img-missing img{display:none}
 .work-media-label{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:20px;font-family:var(--font-mono);font-size:.7rem;letter-spacing:.06em;color:rgba(201,168,76,.4);text-transform:uppercase}
 .work-media.img-missing .work-media-label{display:flex}
+
+/* Brochure — two pages auto-crossfading into each other */
+.work-media.type-slideshow .slide{position:absolute;inset:0;opacity:0;transition:opacity 1.8s ease-in-out}
+.work-media.type-slideshow .slide.active{opacity:1;z-index:1}
+.work-media.type-slideshow .slide img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
+
+/* Timeline — wide image, zoomed in and slowly panning right to left */
+.work-media.type-panzoom{overflow:hidden}
+.work-media.type-panzoom img{
+  position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;
+  animation:panzoom-drift 26s ease-in-out infinite;
+  transform-origin:center center;
+}
+@keyframes panzoom-drift{
+  0%{transform:scale(1.22) translateX(7%)}
+  50%{transform:scale(1.22) translateX(-7%)}
+  100%{transform:scale(1.22) translateX(7%)}
+}
+
 .work-info{position:relative;z-index:2;flex:1;max-width:340px}
 .work-info-idx{font-family:var(--font-mono);font-size:.7rem;color:var(--gold);letter-spacing:.15em;margin-bottom:14px}
 .work-info h3{font-family:var(--font-serif);font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.1;margin-bottom:14px}
@@ -102,34 +121,71 @@ footer a{color:var(--gold);text-decoration:none}
 </footer>
 
 <script>
-// Generic placeholders for now — real project photos pending team review.
-// Just rename these files to match once photos are ready (or tell Claude
-// the real project names and it'll relabel everything to match).
-const photos = [
-  ["photo-01.jpg", "Project One", "Details coming soon"],
-  ["photo-02.jpg", "Project Two", "Details coming soon"],
-  ["photo-03.jpg", "Project Three", "Details coming soon"],
-  ["photo-04.jpg", "Project Four", "Details coming soon"],
-  ["photo-05.jpg", "Project Five", "Details coming soon"],
-  ["photo-06.jpg", "Project Six", "Details coming soon"],
+// Real projects. Each "media" entry says how its image(s) should be
+// displayed — rename/upload files to match these exact filenames:
+//   brochure-mazar-e-qutbi-page-1.jpg   (page 1 of the brochure)
+//   brochure-mazar-e-qutbi-page-2.jpg   (page 2 of the brochure)
+//   timeline-mazar-e-qutbi-ahmedabad.jpg
+//   timeline-al-madrasa-tus-saifiyah.jpg
+const projects = [
+  {
+    title: "Brochure for Mazar e Qutbi",
+    desc: "A two-page brochure is deceptively hard: you're asked to carry the full weight of a site's history, architecture, and visiting information on just two spreads, for an audience ranging from first-time visitors to lifelong devotees. The real challenge on this project was volume — the archival material we were handed could have filled twenty pages, and every stakeholder wanted their section to stay in. Rather than cutting content on request, we rebuilt the hierarchy from scratch: a modular grid that let photography carry the emotional weight while typography carried the facts, so nothing felt omitted even though most of it was. The final two pages read like a single unfolding story rather than a compressed pamphlet.",
+    media: { type: "slideshow", images: ["brochure-mazar-e-qutbi-page-1.jpg", "brochure-mazar-e-qutbi-page-2.jpg"] }
+  },
+  {
+    title: "Timeline for Mazar E Qutbi of Duat Mutlaqeens in Ahmedabad",
+    desc: "This was a large-format timeline tracing generations of Duat Mutlaqeen connected to the Mazar in Ahmedabad — a project where the hardest problem wasn't design, it was history. Dates across different historical records didn't always agree, and the chain of succession had to be verified narration by narration before a single line could be drawn. Once the research was locked, we built a continuous horizontal spine with a consistent date-card system, so a timeline spanning centuries could still be read at a glance, whether printed at mural scale or viewed on a phone. What started as a research problem became one of our most-referenced visual documents.",
+    media: { type: "panzoom", image: "timeline-mazar-e-qutbi-ahmedabad.jpg" }
+  },
+  {
+    title: "Al Madrasa Tus Saifiyah — Timeline of Four Years' Journey",
+    desc: "Four years of institutional life — hundreds of events, milestones, and moments — needed to become one coherent visual journey, without turning into a cluttered wall of dates. The brief kept growing as departments each wanted their events represented, which meant the real design problem was editorial: deciding what earns a place on the timeline and what gets folded into a supporting mention. We solved it by chaptering the four years visually, giving each year its own anchor and rhythm while keeping a single connecting thread running underneath, so the whole journey still reads as one continuous story rather than four separate ones stitched together.",
+    media: { type: "panzoom", image: "timeline-al-madrasa-tus-saifiyah.jpg" }
+  }
 ];
 
 const grid = document.getElementById('galleryGrid');
-photos.forEach(([fname, title, desc], i) => {
+projects.forEach((proj, i) => {
   const row = document.createElement('div');
   row.className = 'work-row';
+
+  let mediaInner = '';
+  let mediaTypeClass = '';
+  if (proj.media.type === 'slideshow') {
+    mediaTypeClass = 'type-slideshow';
+    mediaInner = proj.media.images.map((fname, si) => `
+      <div class="slide${si === 0 ? ' active' : ''}">
+        <img src="${fname}" alt="${proj.title} — page ${si + 1}" loading="lazy" decoding="async" onerror="this.closest('.work-media').classList.add('img-missing')">
+      </div>`).join('');
+  } else {
+    mediaTypeClass = 'type-panzoom';
+    mediaInner = `<img src="${proj.media.image}" alt="${proj.title}" loading="lazy" decoding="async" onerror="this.parentElement.classList.add('img-missing')">`;
+  }
+
   row.innerHTML = `
     <div class="work-row-num">${String(i + 1).padStart(2, '0')}</div>
-    <div class="work-media">
-      <img src="${fname}" alt="${title}" loading="lazy" decoding="async" onerror="this.parentElement.classList.add('img-missing')">
-      <div class="work-media-label">${fname}</div>
+    <div class="work-media ${mediaTypeClass}">
+      ${mediaInner}
+      <div class="work-media-label">${proj.media.type === 'slideshow' ? proj.media.images.join(' / ') : proj.media.image}</div>
     </div>
     <div class="work-info">
-      <div class="work-info-idx">${String(i + 1).padStart(2, '0')} / ${String(photos.length).padStart(2, '0')}</div>
-      <h3>${title}</h3>
-      <p>${desc}</p>
+      <div class="work-info-idx">${String(i + 1).padStart(2, '0')} / ${String(projects.length).padStart(2, '0')}</div>
+      <h3>${proj.title}</h3>
+      <p>${proj.desc}</p>
     </div>`;
   grid.appendChild(row);
+
+  // Brochure: auto-crossfade between the two pages on a loop.
+  if (proj.media.type === 'slideshow') {
+    const slides = row.querySelectorAll('.slide');
+    let active = 0;
+    setInterval(() => {
+      slides[active].classList.remove('active');
+      active = (active + 1) % slides.length;
+      slides[active].classList.add('active');
+    }, 4200);
+  }
 });
 
 // Reveal each row's media as it scrolls into view
@@ -143,25 +199,6 @@ const revealObserver = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.15 });
 mediaEls.forEach(el => revealObserver.observe(el));
-
-// Lightweight scroll parallax — each image drifts inside its frame at a
-// different speed than the page scroll, all driven by a single rAF loop.
-let ticking = false;
-function updateParallax() {
-  const vh = window.innerHeight;
-  mediaEls.forEach(media => {
-    const r = media.getBoundingClientRect();
-    const centerOffset = (r.top + r.height / 2) - vh / 2;
-    const shift = centerOffset * -0.08;
-    const img = media.querySelector('img');
-    if (img) img.style.transform = `translateY(${shift.toFixed(1)}px)`;
-  });
-  ticking = false;
-}
-window.addEventListener('scroll', () => {
-  if (!ticking) { ticking = true; requestAnimationFrame(updateParallax); }
-}, { passive: true });
-updateParallax();
 
 // Custom "View" cursor tag that follows the mouse over each work-media block
 const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
