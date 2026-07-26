@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://maahirstudios-netizen.github.io/maahir-studios/sitemap.xml
+Sitemap: https://maahirstudio.site/sitemap.xml
